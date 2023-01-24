@@ -1,0 +1,24 @@
+name: Create youtube video
+env:
+  HOROSCOPE_API_URL: ${{secrets.HOROSCOPE_API_URL}}
+
+on:
+  push:
+    branches: master
+  # schedule:
+  #   - cron: "0 15 * * *"
+jobs:
+  scrape-horoscopes:
+    name: Scrape Horsocope
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - run: npm install
+      - run: npm run scrape-horoscope
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: outputs
+          path: ./outputs
+          retention-days: 1
