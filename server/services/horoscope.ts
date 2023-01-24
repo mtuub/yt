@@ -4,6 +4,7 @@ import { trimToSentence } from "../utils";
 require("dotenv").config();
 
 const api_url = `${process.env.HOROSCOPE_API_URL}:3002`;
+const word_limit = 500;
 
 async function getHoroscopeTomorrowGeneral(): Promise<Horoscope[]> {
   let horoscopes: Horoscope[] = (await axios.get(`${api_url}/tomorrow-general`))
@@ -11,7 +12,7 @@ async function getHoroscopeTomorrowGeneral(): Promise<Horoscope[]> {
   horoscopes = horoscopes.map((h) => {
     return {
       ...h,
-      horoscope: trimToSentence(`In short, ${h.horoscope}`, 500),
+      horoscope: trimToSentence(`In short, ${h.horoscope}`, word_limit),
     };
   });
 
@@ -24,7 +25,7 @@ async function getHoroscopeTomorrowLove(): Promise<Horoscope[]> {
   horoscopes = horoscopes.map((h) => {
     return {
       ...h,
-      horoscope: trimToSentence(`Regarding love, ${h.horoscope}`, 500),
+      horoscope: trimToSentence(`Regarding love, ${h.horoscope}`, word_limit),
     };
   });
 
@@ -37,7 +38,7 @@ async function getHoroscopeTomorrowCareer(): Promise<Horoscope[]> {
   horoscopes = horoscopes.map((h) => {
     return {
       ...h,
-      horoscope: trimToSentence(`Regarding career, ${h.horoscope}`, 500),
+      horoscope: trimToSentence(`Regarding career, ${h.horoscope}`, word_limit),
     };
   });
 
@@ -51,7 +52,7 @@ async function getHoroscopeTomorrowWellness(): Promise<Horoscope[]> {
   horoscopes = horoscopes.map((h) => {
     return {
       ...h,
-      horoscope: trimToSentence(`Regarding health, ${h.horoscope}`, 500),
+      horoscope: trimToSentence(`Regarding health, ${h.horoscope}`, word_limit),
     };
   });
 

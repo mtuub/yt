@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "build": "tsc -p ."
+        "build": "tsc -p .",
+        "scrape-horoscope": "npm run build && node build/server/scrape_horoscopes.js"
     },
     "devDependencies": {
         "ts-node": "^10.8.1",
