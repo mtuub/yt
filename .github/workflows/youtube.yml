@@ -35,6 +35,8 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: node build/server/generate_tts.js pisces
+      - run: ls
+      - run: cd output && ls
       # - run: node build/server/generate_tts.js ${{ matrix.sign }}
       - uses: actions/upload-artifact@v3
         with:
