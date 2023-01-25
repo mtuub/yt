@@ -8,7 +8,7 @@ export function trimToSentence(
   start_sentence: number,
   character_limit: number
 ): TrimToSentenceData {
-  const sentences = text.split(/(?<=[.!?])/);
+  const sentences = splitTextToSentences(text);
 
   let trimmed_text = "";
   let sentence_count = 0;
@@ -52,4 +52,8 @@ export async function downloadFile({
     responseType: "arraybuffer",
   });
   await fs.writeFile(save_path, response.data);
+}
+
+export function splitTextToSentences(text: string): string[] {
+  return text.split(/(?<=[.!?])/);
 }
