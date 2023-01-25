@@ -13,7 +13,6 @@ async function convertTTSDescript(
     "6510c9b3-4ff0-4d09-8741-cca2c23e100f"
   ); //carla
   const audio_url = await pollGetOverdub(overdub.id);
-  console.log(audio_url);
   const audio = await axios.get(audio_url, { responseType: "arraybuffer" });
   await fs.writeFile(save_path, audio.data);
 }
