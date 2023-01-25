@@ -19,6 +19,6 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: outputs
-          path: ./outputs
+          name: output
+          path: ./output
           retention-days: 1

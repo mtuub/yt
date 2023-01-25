@@ -2,3 +2,4 @@ node_modules
 build
 .env
 output/*.json
+output/*.mp3

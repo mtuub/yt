@@ -3,3 +3,8 @@ export interface Horoscope {
   horoscope: string;
   date: string;
 }
+
+export interface OverdubResponse {
+  id: string;
+  state: string;
+}
