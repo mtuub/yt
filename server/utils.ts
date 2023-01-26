@@ -2,6 +2,7 @@ const { exec } = require("child_process");
 import fs from "fs/promises";
 import axios from "axios";
 import { TrimToSentenceData } from "./types";
+import crypto from "crypto";
 
 export function trimToSentence(
   text: string,
@@ -56,4 +57,21 @@ export async function downloadFile({
 
 export function splitTextToSentences(text: string): string[] {
   return text.split(/(?<=[.!?])/);
+}
+
+export function generateRandomString(size: number): string {
+  return crypto
+    .randomBytes(Math.ceil(size / 2))
+    .toString("hex") // convert to hexadecimal format
+    .slice(0, size); // return required number of characters
+}
+
+export async function getFileSize(filePath): Promise<number> {
+  try {
+    let stats = await fs.stat(filePath);
+    let fileSizeInBytes = stats.size;
+    return fileSizeInBytes;
+  } catch (err) {
+    console.error(err);
+  }
 }

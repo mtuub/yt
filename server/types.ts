@@ -1,7 +1,10 @@
+import { Subtitle } from "./services/subtitles";
+
 export interface Horoscope {
   sign: string;
   horoscope: string;
   date: string;
+  subtitles: Subtitle[];
 }
 
 export interface OverdubResponse {

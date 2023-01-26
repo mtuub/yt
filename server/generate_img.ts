@@ -1,17 +1,16 @@
 import { AI_CLIENT, getToken } from "./services/ai_image";
 import fs from "fs/promises";
 import { Horoscope } from "./types";
-import { splitTextToSentences } from "./utils";
 
 (async () => {
   const sign = process.argv[2].toLowerCase();
 
   const horoscope: Horoscope[] = JSON.parse(
-    await fs.readFile("output/horoscope.json", "utf-8")
+    await fs.readFile("output/horoscope_with_subtitles.json", "utf-8")
   );
   const sign_horoscope = horoscope.find((h) => h.sign.toLowerCase() === sign);
 
-  const sentences = splitTextToSentences(sign_horoscope.horoscope);
+  const sentences = sign_horoscope.subtitles.map((subtitle) => subtitle.text);
 
   try {
     await fs.mkdir(`output/images`, { recursive: true });
