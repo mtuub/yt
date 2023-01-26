@@ -12,10 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
-
       - run: npm install
       - run: npm run scrape-horoscope
-
       - uses: actions/upload-artifact@v3
         with:
           name: output
@@ -62,10 +60,9 @@ jobs:
     needs: generate-tts
     steps:
       - uses: actions/checkout@main
-
+      - uses: actions/download-artifact@v3
       - run: npm install
       - run: npm run generate-subtitles
-
       - uses: actions/upload-artifact@v3
         with:
           name: output
