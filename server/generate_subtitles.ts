@@ -8,7 +8,7 @@ import { createSubtitlesForAudio } from "./services/subtitles";
   );
 
   const subtitles_requests = horoscopes.map((horoscope) =>
-    createSubtitlesForAudio(`output/${horoscope.sign}.mp3`)
+    createSubtitlesForAudio(`output/${horoscope.sign.toLowerCase()}.mp3`)
   );
   const subtitles = await Promise.all(subtitles_requests);
 
