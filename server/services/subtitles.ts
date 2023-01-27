@@ -2,19 +2,27 @@ import axios from "axios";
 import { generateRandomString, getFileSize, sleep } from "../utils";
 import fs from "fs/promises";
 import getAudioDurationInSeconds from "get-audio-duration";
+import { SubtitleData, SubtitleWord } from "../types";
 
 interface UploadResponse {
   upload_url: string;
   cdn_url: string;
 }
 
-export interface Subtitle {
-  from: number;
-  to: number;
-  text: string;
+interface SubtitleResponse {
+  data: {
+    status: string;
+    subtitles: {
+      [key: string]: Subtitle;
+    };
+  };
 }
 
-const project_id = "b3384809-e512-4b43-83bb-97fcb6628597";
+interface Subtitle {
+  from: number;
+  to: number;
+  words: SubtitleWord[];
+}
 
 const headers = {
   origin: "https://www.veed.io",
@@ -24,7 +32,22 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-async function createMediaName(media_id: string): Promise<void> {
+async function createProject(): Promise<string> {
+  const data = JSON.stringify({
+    tool: "subtitles",
+    isAnonymous: true,
+  });
+
+  const response = await axios.post(`https://www.veed.io/api/projects`, data, {
+    headers,
+  });
+  return response.data.id;
+}
+
+async function createMediaName(
+  media_id: string,
+  project_id: string
+): Promise<void> {
   const data = JSON.stringify({
     data: {
       edit: {
@@ -88,8 +111,9 @@ async function uploadAudioToVeed(
 async function createSubtitles(
   media_id: string,
   cdn_url: string,
+  project_id: string,
   audio_path: string
-): Promise<Subtitle[]> {
+): Promise<SubtitleData[]> {
   const duration = await getAudioDurationInSeconds(audio_path);
   const data = JSON.stringify({
     trimStart: 0,
@@ -104,45 +128,69 @@ async function createSubtitles(
   });
 
   const transcription = await pollSubtitles(media_id, data);
-  const subtitles: any = Object.values(transcription);
-  subtitles.sort((a: any, b: any) => a.from - b.from);
+  const subtitles: Subtitle[] = Object.values(transcription.data.subtitles);
+  subtitles.sort((a: Subtitle, b: Subtitle) => a.from - b.from);
 
-  const subtitles_data: Subtitle[] = subtitles.map((s: any) => {
-    return {
-      text: s.words.map((w) => w.value).join(" "),
-      from: s.from,
-      to: s.to,
-    };
-  });
-  return subtitles_data;
+  const subtitle_data: SubtitleData[] = [];
+  let last_idx = 0;
+
+  for (let idx = 0; idx < subtitles.length; idx++) {
+    const subtitle = subtitles[idx];
+
+    const last_word = subtitle.words[subtitle.words.length - 1].value;
+    const last_word_has_punctuation = last_word.match(/[.,!?]/g);
+
+    if (last_word_has_punctuation) {
+      const prev_subtitle = subtitles.slice(last_idx, idx + 1);
+      const prev_subtitle_text = prev_subtitle
+        .map((s) => s.words.map((w) => w.value).join(" "))
+        .join(" ");
+
+      const data: SubtitleData = {
+        sentence: prev_subtitle_text,
+        from: prev_subtitle[0].from,
+        to: prev_subtitle[prev_subtitle.length - 1].to,
+        sub_sentences: prev_subtitle.map((s) => {
+          return {
+            text: s.words.map((w) => w.value).join(" "),
+            words_alignment: s.words,
+          };
+        }),
+      };
+      subtitle_data.push(data);
+      last_idx = idx + 1;
+    }
+  }
+  return subtitle_data;
 }
 
-async function pollSubtitles(media_id, data): Promise<any> {
+async function pollSubtitles(media_id, data): Promise<SubtitleResponse> {
   const response = await axios.post(
     `https://www.veed.io/api/v1/subtitles/assets/${media_id}/transcribe`,
     data,
     { headers }
   );
-  const status = response.data.data.status;
-  if (status !== "active") {
+  const res_data: SubtitleResponse = response.data;
+  if (res_data.data.status !== "active") {
     await sleep(2000);
     return await pollSubtitles(media_id, data);
   }
 
-  return response.data.data.subtitles;
+  return response.data;
 }
 
 async function createSubtitlesForAudio(
   audio_path: string
-): Promise<Subtitle[]> {
+): Promise<SubtitleData[]> {
+  const project_id = await createProject();
   const media_id = generateRandomString(21);
-  await createMediaName(media_id);
+  await createMediaName(media_id, project_id);
   const { cdn_url, upload_url } = await getUploadUrlForMp3(
     media_id,
     audio_path
   );
   await uploadAudioToVeed(upload_url, audio_path);
-  return await createSubtitles(media_id, cdn_url, audio_path);
+  return await createSubtitles(media_id, cdn_url, project_id, audio_path);
 }
 
 export { createSubtitlesForAudio };

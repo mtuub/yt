@@ -1,10 +1,7 @@
-import { Subtitle } from "./services/subtitles";
-
 export interface Horoscope {
   sign: string;
   horoscope: string;
   date: string;
-  subtitles: Subtitle[];
 }
 
 export interface OverdubResponse {
@@ -15,4 +12,22 @@ export interface OverdubResponse {
 export interface TrimToSentenceData {
   text: string;
   sentence_count: number;
+}
+
+export interface SubtitleData {
+  sentence: string;
+  from: number;
+  to: number;
+  sub_sentences: SubSentence[];
+}
+
+export interface SubSentence {
+  text: string;
+  words_alignment: SubtitleWord[];
+}
+
+export interface SubtitleWord {
+  from: number;
+  to: number;
+  value: string;
 }

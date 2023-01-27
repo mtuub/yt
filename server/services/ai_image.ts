@@ -36,10 +36,10 @@ class AI_CLIENT {
   async pollTaskForUrl({ task_id }) {
     const response = await this.http_client.get(`/tasks/${task_id}`);
     const state = response.data.state;
-    // console.log(task_id, state);
 
     if (state == "failed") {
-      return false;
+      // return false;
+      throw new Error("Task failed");
     }
     if (state !== "completed") {
       await sleep(2000);
