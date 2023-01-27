@@ -31,3 +31,8 @@ export interface SubtitleWord {
   to: number;
   value: string;
 }
+
+export interface HoroscopeWithSubtitles {
+  horoscope: Horoscope;
+  subtitles: SubtitleData[];
+}

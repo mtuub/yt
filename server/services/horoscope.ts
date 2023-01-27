@@ -9,7 +9,12 @@ async function getHoroscopeTomorrowAllCategories(): Promise<Horoscope[]> {
     await axios.get(`${api_url}/tomorrow-merged`)
   ).data.data;
 
-  return horoscopes;
+  return horoscopes.map((h) => {
+    return {
+      ...h,
+      sign: h.sign.toLowerCase(),
+    };
+  });
 }
 
 export { getHoroscopeTomorrowAllCategories };

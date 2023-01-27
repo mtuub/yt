@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { Horoscope } from "./types";
+import { Horoscope, HoroscopeWithSubtitles } from "./types";
 import { createSubtitlesForAudio } from "./services/subtitles";
 
 (async () => {
@@ -12,12 +12,14 @@ import { createSubtitlesForAudio } from "./services/subtitles";
   );
   const subtitles = await Promise.all(subtitles_requests);
 
-  const horoscopes_with_subtitles = horoscopes.map((horoscope, idx) => {
-    return {
-      ...horoscope,
-      subtitles: subtitles[idx],
-    };
-  });
+  const horoscopes_with_subtitles: HoroscopeWithSubtitles[] = horoscopes.map(
+    (horoscope, idx) => {
+      return {
+        horoscope,
+        subtitles: subtitles[idx],
+      };
+    }
+  );
 
   await fs.writeFile(
     "output/horoscope_with_subtitles.json",
