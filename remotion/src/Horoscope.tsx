@@ -1,13 +1,7 @@
 import React from "react";
-import horoscopes from "../../output/horoscope.json";
 import { Audio, Img, Series, useCurrentFrame, useVideoConfig } from "remotion";
 
-const sign = "aries";
-const sign_horoscope: any = horoscopes.find(
-  (x) => x.sign.toLowerCase() === sign.toLowerCase()
-);
-
-export const HoroscopeComponent: React.FC = () => {
+export const HoroscopeComponent: React.FC = ({ horoscope }) => {
   const videoConfig = useVideoConfig();
   const frame = useCurrentFrame();
 
@@ -19,31 +13,16 @@ export const HoroscopeComponent: React.FC = () => {
         height: "100%",
       }}
     >
-      <Audio src={require(`../../output/${sign}.mp3`)} />
+      <Audio src={require(`../../output/${horoscope.sign}.mp3`)} />
 
       <Series>
-        {sign_horoscope.sentences.map((sentence, sIdx) => {
-          const sentence_duration_in_sec =
-            sign_horoscope.sentences_duration_in_sec[sIdx];
-
-          const durationInFrames = Math.floor(
-            videoConfig.fps * sentence_duration_in_sec
-          );
-
-          const elapsedSentencesDurationInSec =
-            sign_horoscope.sentences_duration_in_sec
-              .slice(0, sIdx)
-              .reduce((a: any, b: any) => a + b, 0);
-          const elapsedFrames = Math.floor(
-            elapsedSentencesDurationInSec * videoConfig.fps
-          );
-          const progress = (frame - elapsedFrames) / durationInFrames;
-          const characters_to_Show = Math.floor(
-            sign_horoscope.sentences[sIdx].length * progress
-          );
-
+        {horoscope.subtitles.map((subtitle, sIdx) => {
           return (
-            <Series.Sequence durationInFrames={durationInFrames}>
+            <Series.Sequence
+              durationInFrames={Math.round(
+                (subtitle.to - subtitle.from) * videoConfig.fps
+              )}
+            >
               <Img
                 height={videoConfig.height}
                 width={videoConfig.width / 2.3}
@@ -53,10 +32,9 @@ export const HoroscopeComponent: React.FC = () => {
                   position: "absolute",
                   zIndex: 3,
                 }}
-                src={require(`../../output/images/${sign}_part_${sIdx}.png`)}
+                src={require(`../../output/images/${horoscope.sign}_part_${sIdx}.png`)}
               />
 
-              {/* background image */}
               <Img
                 width={videoConfig.width + 200}
                 height={videoConfig.height + 200}
@@ -66,7 +44,7 @@ export const HoroscopeComponent: React.FC = () => {
                   top: -100,
                   position: "absolute",
                 }}
-                src={require(`../../output/images/${sign}_part_${sIdx}.png`)}
+                src={require(`../../output/images/${horoscope.sign}_part_${sIdx}.png`)}
               />
               <h3
                 style={{
@@ -80,7 +58,7 @@ export const HoroscopeComponent: React.FC = () => {
                   zIndex: 1,
                 }}
               >
-                {sentence.slice(0, characters_to_Show)}
+                {subtitle.text}
               </h3>
             </Series.Sequence>
           );
