@@ -190,7 +190,14 @@ async function createSubtitlesForAudio(
     audio_path
   );
   await uploadAudioToVeed(upload_url, audio_path);
-  return await createSubtitles(media_id, cdn_url, project_id, audio_path);
+  const subtitles = await createSubtitles(
+    media_id,
+    cdn_url,
+    project_id,
+    audio_path
+  );
+  console.log(`Created  subtitles for ${audio_path}`);
+  return subtitles;
 }
 
 export { createSubtitlesForAudio };

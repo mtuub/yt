@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { Horoscope, HoroscopeWithSubtitles } from "./types";
+import { Horoscope, HoroscopeWithSubtitles, SubtitleData } from "./types";
 import { createSubtitlesForAudio } from "./services/subtitles";
 
 (async () => {
@@ -7,22 +7,22 @@ import { createSubtitlesForAudio } from "./services/subtitles";
     await fs.readFile("output/horoscope.json", "utf-8")
   );
 
-  const subtitles_requests = horoscopes.map((horoscope) =>
-    createSubtitlesForAudio(`output/${horoscope.sign.toLowerCase()}.mp3`)
-  );
-  const subtitles = await Promise.all(subtitles_requests);
+  const horoscope_with_subtitles: HoroscopeWithSubtitles[] = [];
 
-  const horoscopes_with_subtitles: HoroscopeWithSubtitles[] = horoscopes.map(
-    (horoscope, idx) => {
-      return {
-        horoscope,
-        subtitles: subtitles[idx],
-      };
-    }
-  );
+  for (let idx = 0; idx < horoscopes.length; idx++) {
+    const horoscope = horoscopes[idx];
+    const subtitles: SubtitleData[] = await createSubtitlesForAudio(
+      `output/${horoscope.sign}.mp3`
+    );
+    const horoscope_with_subtitle: HoroscopeWithSubtitles = {
+      horoscope,
+      subtitles,
+    };
+    horoscope_with_subtitles.push(horoscope_with_subtitle);
+  }
 
   await fs.writeFile(
-    "output/horoscope_with_subtitles.json",
-    JSON.stringify(horoscopes_with_subtitles)
+    `output/horoscope_with_subtitles.json`,
+    JSON.stringify(horoscope_with_subtitles)
   );
 })();
