@@ -1,8 +1,6 @@
 {
     "scripts": {
         "build": "tsc -p .",
-        "scrape-horoscope": "npm run build && node build/server/scrape_horoscopes.js",
-        "generate-subtitles": "npm run build && node build/server/generate_subtitles.js",
         "dev-video": "remotion preview remotion/src/index.tsx --port 3003"
     },
     "devDependencies": {
