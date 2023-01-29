@@ -1,34 +1,48 @@
-import { AI_CLIENT, getToken } from "./services/ai_image";
 import fs from "fs/promises";
+import { scaleImage } from "./services/image_scaler";
+import { getVideoThumbnails } from "./services/pictory";
 import { HoroscopeWithSubtitles } from "./types";
+import { downloadFile } from "./utils";
 
 (async () => {
-  const sign = process.argv[2].toLowerCase();
-
-  const horoscope: HoroscopeWithSubtitles[] = JSON.parse(
+  const horoscopes: HoroscopeWithSubtitles[] = JSON.parse(
     await fs.readFile("output/horoscope_with_subtitles.json", "utf-8")
   );
-  const sign_horoscope = horoscope.find((h) => h.horoscope.sign === sign);
 
-  const sentences = sign_horoscope.subtitles.map((s) => s.sentence);
+  const sign = process.argv[2].toLowerCase();
+  const horoscope = horoscopes.find((h) => h.horoscope.sign === sign);
 
   try {
     await fs.mkdir(`output/images`, { recursive: true });
+    await fs.mkdir(`output/images_json`, { recursive: true });
   } catch (error) {}
 
-  // generate images
-  const token = await getToken();
-  const ai_client = new AI_CLIENT(token);
+  const sentences = horoscope.subtitles.map((s) => s.sentence);
 
-  for (let idx = 0; idx < sentences.length; idx++) {
-    const sentence = sentences[idx];
+  const horoscope_with_subtitles_img: HoroscopeWithSubtitles[] = [];
 
-    await ai_client.generateImageFromText({
-      style: 52,
-      caption: sentence,
-      save_path: `output/images/${sign}_part_${idx}.png`,
+  for (let sIdx = 0; sIdx < sentences.length; sIdx++) {
+    const sentence = sentences[sIdx];
+    const video_thumbnails = await getVideoThumbnails(sentence);
+
+    const image_path = `output/images/${sign}_${sIdx}.jpg`;
+
+    await downloadFile({
+      file_url: video_thumbnails[0],
+      save_path: image_path,
     });
 
-    console.log(`Generated image for sentence ${idx + 1} /${sentences.length}`);
+    const upscaled_img_url = await scaleImage(image_path, 4);
+    horoscope.subtitles[sIdx].image_url = upscaled_img_url;
+    horoscope_with_subtitles_img.push(horoscope);
+    console.log(
+      `Generated ${sIdx}/${sentences.length} images for ${horoscope.horoscope.sign}`
+    );
   }
+
+  await fs.writeFile(
+    `output/images_json/${sign}.json`,
+    JSON.stringify(horoscope_with_subtitles_img[0]),
+    "utf-8"
+  );
 })();

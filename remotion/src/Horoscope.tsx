@@ -1,22 +1,21 @@
 import React from "react";
-import { Audio, Img, Series, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Img, Series, useVideoConfig } from "remotion";
+import { HoroscopeWithSubtitles } from "./types";
 
-export const HoroscopeComponent: React.FC = ({ horoscope }) => {
+export const HoroscopeComponent: React.FC = (props) => {
   const videoConfig = useVideoConfig();
-  const frame = useCurrentFrame();
+
+  const horoscope_with_subtitles_and_images: HoroscopeWithSubtitles =
+    props.horoscopeWithSubtitles;
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <Audio src={require(`../../output/${horoscope.sign}.mp3`)} />
+    <AbsoluteFill>
+      <Audio
+        src={require(`../../output/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
+      />
 
       <Series>
-        {horoscope.subtitles.map((subtitle, sIdx) => {
+        {horoscope_with_subtitles_and_images.subtitles.map((subtitle, sIdx) => {
           return (
             <Series.Sequence
               durationInFrames={Math.round(
@@ -25,45 +24,53 @@ export const HoroscopeComponent: React.FC = ({ horoscope }) => {
             >
               <Img
                 height={videoConfig.height}
-                width={videoConfig.width / 2.3}
-                style={{
-                  left: 0,
-                  top: 0,
-                  position: "absolute",
-                  zIndex: 3,
-                }}
-                src={require(`../../output/images/${horoscope.sign}_part_${sIdx}.png`)}
+                width={videoConfig.width}
+                src={`${horoscope_with_subtitles_and_images.subtitles[sIdx].image_url}`}
               />
 
-              <Img
-                width={videoConfig.width + 200}
-                height={videoConfig.height + 200}
-                style={{
-                  filter: "blur(6rem)",
-                  left: -100,
-                  top: -100,
-                  position: "absolute",
-                }}
-                src={require(`../../output/images/${horoscope.sign}_part_${sIdx}.png`)}
-              />
-              <h3
-                style={{
-                  color: "white",
-                  position: "absolute",
-                  top: "20%",
-                  left: "50%",
-                  fontSize: 60,
-                  letterSpacing: 5,
-                  width: 800,
-                  zIndex: 1,
-                }}
-              >
-                {subtitle.text}
-              </h3>
+              <Series>
+                {subtitle.sub_sentences.map((sub_sentence, ssIdx) => {
+                  return sub_sentence.words_alignment.map(
+                    (word_alignment, waIdx) => {
+                      return (
+                        <Series.Sequence
+                          durationInFrames={Math.round(
+                            (word_alignment.to - word_alignment.from) *
+                              videoConfig.fps
+                          )}
+                        >
+                          <AbsoluteFill
+                            style={{
+                              top: "70%",
+                              width: "70%",
+                              margin: "0 auto",
+                              // backgroundColor: "black",
+                            }}
+                          >
+                            <h3
+                              style={{
+                                color: "white",
+                                fontSize: 75,
+                                // textAlign: "center",
+                              }}
+                            >
+                              {sub_sentence.words_alignment
+                                .slice(0, waIdx + 1)
+                                .map((wa) => wa.value)
+                                .join(" ")}
+                            </h3>
+                          </AbsoluteFill>
+                          ;
+                        </Series.Sequence>
+                      );
+                    }
+                  );
+                })}
+              </Series>
             </Series.Sequence>
           );
         })}
       </Series>
-    </div>
+    </AbsoluteFill>
   );
 };

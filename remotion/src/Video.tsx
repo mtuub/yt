@@ -1,16 +1,18 @@
 import { Composition } from "remotion";
 import React from "react";
 import { HoroscopeComponent } from "./Horoscope";
-import horoscopes from "../../output/horoscope_with_subtitles.json";
+import horoscopes from "../../output/horoscope_with_subtitles_and_images.json";
 import "./style.css";
 
 export const RemotionVideo: React.FC = () => {
   const sign = "aries";
-  const horoscope = horoscopes.find(
-    (h) => h.sign.toLowerCase() === sign.toLowerCase()
+  const horoscopeWithSubtitles = horoscopes.find(
+    (h) => h.horoscope.sign === sign
   );
   const video_duration: any =
-    horoscope?.subtitles[horoscope.subtitles.length - 1].to;
+    horoscopeWithSubtitles?.subtitles[
+      horoscopeWithSubtitles.subtitles.length - 1
+    ].to;
 
   return (
     <Composition
@@ -21,10 +23,7 @@ export const RemotionVideo: React.FC = () => {
       height={1080}
       width={1920}
       defaultProps={{
-        horoscope: {
-          ...horoscope,
-          sign: horoscope?.sign.toLowerCase(),
-        },
+        horoscopeWithSubtitles,
       }}
     />
   );
