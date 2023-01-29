@@ -14,12 +14,10 @@ import { downloadFile } from "./utils";
 
   try {
     await fs.mkdir(`output/images`, { recursive: true });
-    await fs.mkdir(`output/images_json`, { recursive: true });
+    await fs.mkdir(`output/scaled_images`, { recursive: true });
   } catch (error) {}
 
   const sentences = horoscope.subtitles.map((s) => s.sentence);
-
-  const horoscope_with_subtitles_img: HoroscopeWithSubtitles[] = [];
 
   for (let sIdx = 0; sIdx < sentences.length; sIdx++) {
     const sentence = sentences[sIdx];
@@ -32,17 +30,11 @@ import { downloadFile } from "./utils";
       save_path: image_path,
     });
 
-    const upscaled_img_url = await scaleImage(image_path, 4);
-    horoscope.subtitles[sIdx].image_url = upscaled_img_url;
-    horoscope_with_subtitles_img.push(horoscope);
+    const out_path = `output/scaled_images/${sign}_${sIdx}_scaled.jpg`;
+    await scaleImage(image_path, 2, out_path);
+
     console.log(
       `Generated ${sIdx}/${sentences.length} images for ${horoscope.horoscope.sign}`
     );
   }
-
-  await fs.writeFile(
-    `output/images_json/${sign}.json`,
-    JSON.stringify(horoscope_with_subtitles_img[0]),
-    "utf-8"
-  );
 })();
