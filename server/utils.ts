@@ -55,17 +55,6 @@ export async function downloadFile({
   await fs.writeFile(save_path, response.data);
 }
 
-export async function urlToBuffer({
-  file_url,
-}: {
-  file_url: string;
-}): Promise<Buffer> {
-  const response = await axios.get(file_url, {
-    responseType: "arraybuffer",
-  });
-  return response.data;
-}
-
 export function splitTextToSentences(text: string): string[] {
   return text.split(/(?<=[.!?])/);
 }

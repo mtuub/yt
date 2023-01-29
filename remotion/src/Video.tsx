@@ -1,7 +1,7 @@
 import { Composition } from "remotion";
 import React from "react";
 import { HoroscopeComponent } from "./Horoscope";
-import horoscopes from "../../output/horoscope_with_subtitles_and_images.json";
+import horoscopes from "../../output/horoscopes_with_subtitles_images.json";
 import "./style.css";
 
 export const RemotionVideo: React.FC = () => {
