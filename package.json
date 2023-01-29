@@ -1,6 +1,7 @@
 {
     "scripts": {
         "build": "tsc -p .",
+        "install-build": "npm install && npm run build",
         "dev-video": "remotion preview remotion/src/index.tsx --port 3003"
     },
     "devDependencies": {

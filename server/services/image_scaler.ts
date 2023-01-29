@@ -1,35 +1,50 @@
 import axios from "axios";
 import { writeFile } from "fs/promises";
-const FormData = require("form-data");
+import { sleep } from "../utils";
 
-const fs = require("fs");
+require("dotenv").config();
 
-async function scaleImage(
-  img_path: string,
-  scale: number,
-  save_path: string
-): Promise<void> {
-  const data = new FormData();
-  data.append("image", fs.createReadStream(img_path));
-  data.append("scale", scale.toString());
-  const headers = {
-    Origin: "https://create.pixelcut.ai",
-    Referer: "https://create.pixelcut.ai/",
-    "x-client-version": "web",
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-    ...data.getHeaders(),
-  };
+async function createDeployment(): Promise<string> {
   const response = await axios.post(
-    "https://api2.pixelcut.app/image/upscale/v1",
-    data,
+    "https://api.vercel.com/v13/deployments?forceNew=1",
     {
-      headers,
-      responseType: "arraybuffer",
+      name: "image-scaler-api",
+      deploymentId: "dpl_Djhi1viVdTmrwM7pw9xumrg46kw8",
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+      },
     }
   );
+  return `https://${response.data.url}`;
+}
 
+async function scaleImage(
+  url: string,
+  scale: number,
+  save_path: string,
+  deploy_url: string
+): Promise<void> {
+  const response = await axios.post(
+    deploy_url,
+    {
+      url,
+      scale,
+    },
+    { responseType: "arraybuffer" }
+  );
   await writeFile(save_path, response.data);
 }
 
-export { scaleImage };
+async function pollDeployment(deploy_url: string): Promise<void> {
+  const response = await axios.get(deploy_url);
+  if (response.data === "Image scaler API is running") {
+    return;
+  } else {
+    await sleep(3000);
+    await pollDeployment(deploy_url);
+  }
+}
+
+export { createDeployment, scaleImage, pollDeployment };
