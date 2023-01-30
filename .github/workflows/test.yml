@@ -12,11 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - name: JSON to variables
-        uses: antifree/json-to-variables@v1.0.1
-        with:
-          filename: "signs.json"
-          prefix: json
+      # - name: JSON to variables
+      #   uses: antifree/json-to-variables@v1.0.1
+      #   with:
+      #     filename: "signs.json"
+      #     prefix: json
 
-      - name: Show output
-        run: echo ${{ env.json_include }}
+      # - name: Show output
+      #   run: echo ${{ env.json_include }}
+
+      - run: file_contents=$(cat signs.json)
+      - run: echo "The file contents are: $file_contents"
