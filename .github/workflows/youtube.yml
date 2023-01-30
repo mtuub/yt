@@ -167,7 +167,7 @@ jobs:
         with:
           run_id: 4042410763
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/${{matrix.sign}}.mp4 --props='{\"sign\":\"${{matrix.sign}}\"}'
+      - run: npx remotion render remotion/src/index.tsx  Horoscope output/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
       - uses: actions/upload-artifact@v3
         with:
           name: output
