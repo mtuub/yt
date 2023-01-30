@@ -25,8 +25,8 @@ jobs:
         with:
           path: ./signs.json
 
-      - name: Echo signs.json
-        run: echo "${{ steps.package.outputs.content }}"
+      - name: Set env variable
+        run: echo "signs=${{ steps.package.outputs.content }}" >> $GITHUB_ENV
 
   job2:
     needs: job1
@@ -34,5 +34,5 @@ jobs:
     # strategy:
     #   matrix: ${{fromJson(needs.job1.outputs.package.outputs.content)}}
     steps:
-      #   - run: echo ${{ matrix.sign }}
-      - run: echo "${{ needs.job1.package.outputs.content }}"
+      - run: echo ${{ env.signs }}
+      # - run: echo "${{ needs.job1.package.outputs.content }}"
