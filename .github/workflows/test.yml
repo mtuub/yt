@@ -1,0 +1,16 @@
+name: Test
+env:
+  SIGNS: [aries, taurus, gemini, cancer, leo, virgo]
+
+on:
+  push:
+    branches: master
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sign: fromJson( ${{ env.SIGNS }} )
+    steps:
+      run: echo ${{ matrix.sign }}
