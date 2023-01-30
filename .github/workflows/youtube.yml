@@ -166,7 +166,6 @@ jobs:
       - uses: dawidd6/action-download-artifact@v2
         with:
           run_id: 4042410763
-      - run: npm install
       - run: npx remotion render .\remotion\src\index.tsx  Horoscope output/${{matrix.sign}}.mp4 --props='{\"sign\":\"${{matrix.sign}}\"}'
       - uses: actions/upload-artifact@v3
         with:
