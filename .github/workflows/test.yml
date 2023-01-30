@@ -22,4 +22,4 @@ jobs:
       #   run: echo ${{ env.json_include }}
 
       - run: file_contents=$(cat signs.json)
-      - run: echo "The file contents are: $file_contents"
+      - run: echo $file_contents
