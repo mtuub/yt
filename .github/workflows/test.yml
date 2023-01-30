@@ -3,28 +3,20 @@ name: Test
 on:
   push:
     branches: master
-# jobs:
-#   job1:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       matrix: ${{ steps.set-matrix.outputs.matrix }}
-#     steps:
-#       - id: set-matrix
-#         run: cat signs.json >> $matrix
 
 jobs:
-  job2:
+  job1:
     runs-on: ubuntu-latest
     # strategy:
     #   matrix: ${{fromJson(needs.job1.outputs.package.outputs.content)}}
     steps:
-      # - run: echo ${{ env.signs }}
-      # - run: echo "${{ needs.job1.package.outputs.content }}"
       - uses: actions/checkout@main
+
       - name: JSON to variables
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: "test.json"
-          prefix: test
+          filename: "signs.json"
+          prefix: json
+
       - name: Show output
-        run: echo "The time was ${{ env.test_value }}, ${{ env.test_array_0_value }}, ${{ env.test_obj_value1 }}"
+        run: echo ${{ env.json_include_0_sign }}"
