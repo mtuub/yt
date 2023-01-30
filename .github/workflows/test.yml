@@ -31,7 +31,8 @@ jobs:
   job2:
     needs: job1
     runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJson(needs.job1.outputs.package.outputs.content)}}
+    # strategy:
+    #   matrix: ${{fromJson(needs.job1.outputs.package.outputs.content)}}
     steps:
-      - run: echo ${{ matrix.sign }}
+      #   - run: echo ${{ matrix.sign }}
+      - run: echo "${{ needs.job1.package.outputs.content }}"
