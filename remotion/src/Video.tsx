@@ -1,11 +1,11 @@
-import { Composition } from "remotion";
+import { Composition, getInputProps } from "remotion";
 import React from "react";
 import { HoroscopeComponent } from "./Horoscope";
 import horoscopes from "../../output/horoscope_with_subtitles.json";
 import "./style.css";
 
 export const RemotionVideo = () => {
-  const sign = "sagittarius";
+  const { sign } = getInputProps();
   const horoscopeWithSubtitles = horoscopes.find(
     (h) => h.horoscope.sign === sign
   );
