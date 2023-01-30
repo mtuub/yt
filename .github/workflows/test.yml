@@ -26,7 +26,7 @@ jobs:
           path: ./signs.json
 
       - name: Set env variable
-        run: echo "signs=${{ steps.package.outputs.content }}" >> $GITHUB_ENV
+        run: echo "signs=\"${{ steps.package.outputs.content }}\"" >> $GITHUB_ENV
 
   job2:
     needs: job1
