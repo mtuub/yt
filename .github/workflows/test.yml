@@ -19,4 +19,4 @@ jobs:
           prefix: json
 
       - name: Show output
-        run: echo ${{ env.json_include_0_sign }}"
+        run: echo ${{ env.json_include }}
