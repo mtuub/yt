@@ -20,6 +20,7 @@ jobs:
     steps:
       # - run: echo ${{ env.signs }}
       # - run: echo "${{ needs.job1.package.outputs.content }}"
+      - uses: actions/checkout@main
       - name: JSON to variables
         uses: antifree/json-to-variables@v1.0.1
         with:
