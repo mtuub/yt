@@ -114,8 +114,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
-      - run: npm install
-      - run: npm run build
+      - run: npm run install-build
       - run: node build/server/generate_img.js ${{ matrix.sign }}
       - uses: actions/upload-artifact@v3
         with:
@@ -133,8 +132,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
-      - run: npm install
-      - run: npm run build
+      - run: npm run install-build
       - run: node build/server/generate_img.js ${{ matrix.sign }}
       - uses: actions/upload-artifact@v3
         with:

@@ -1,13 +1,22 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, Series, useVideoConfig } from "remotion";
+import {
+  AbsoluteFill,
+  Audio,
+  Img,
+  Series,
+  useVideoConfig,
+  useCurrentFrame,
+} from "remotion";
 import { HoroscopeWithSubtitles } from "./types";
+import { splitStringToWord } from "./utils";
+import { VideoProgress } from "./VideoProgress";
 
-export const HoroscopeComponent: React.FC = (props) => {
+export const HoroscopeComponent = (props) => {
   const videoConfig = useVideoConfig();
+  const frame = useCurrentFrame();
 
   const horoscope_with_subtitles_and_images: HoroscopeWithSubtitles =
     props.horoscopeWithSubtitles;
-
   return (
     <AbsoluteFill>
       <Audio
@@ -25,13 +34,20 @@ export const HoroscopeComponent: React.FC = (props) => {
               <Img
                 height={videoConfig.height}
                 width={videoConfig.width}
-                src={`${horoscope_with_subtitles_and_images.subtitles[sIdx].image_url}`}
+                src={require(`../../output/scaled_images/${horoscope_with_subtitles_and_images.horoscope.sign}_${sIdx}_scaled.jpg`)}
               />
 
               <Series>
                 {subtitle.sub_sentences.map((sub_sentence, ssIdx) => {
                   return sub_sentence.words_alignment.map(
                     (word_alignment, waIdx) => {
+                      const sentence = sub_sentence.words_alignment
+                        .slice(0, waIdx + 1)
+                        .map((wa) => wa.value)
+                        .join(" ");
+
+                      const h3_sentences = splitStringToWord(sentence, 40);
+
                       return (
                         <Series.Sequence
                           durationInFrames={Math.round(
@@ -41,24 +57,30 @@ export const HoroscopeComponent: React.FC = (props) => {
                         >
                           <AbsoluteFill
                             style={{
-                              top: "70%",
+                              top: "75%",
                               width: "70%",
-                              margin: "0 auto",
-                              // backgroundColor: "black",
+                              left: "22%",
                             }}
                           >
-                            <h3
-                              style={{
-                                color: "white",
-                                fontSize: 75,
-                                // textAlign: "center",
-                              }}
-                            >
-                              {sub_sentence.words_alignment
-                                .slice(0, waIdx + 1)
-                                .map((wa) => wa.value)
-                                .join(" ")}
-                            </h3>
+                            {h3_sentences.map((h3_sentence, idx) => {
+                              return (
+                                <h3
+                                  style={{
+                                    color: "#FFFF04",
+                                    fontSize: 60,
+                                    margin: "0",
+                                    marginBottom: "10px",
+                                    // textAlign: "center",
+                                    backgroundColor: "rgba(0,0,0,0.8)",
+                                    padding: "10px 15px",
+                                    width: "fit-content",
+                                    maxWidth: "100%",
+                                  }}
+                                >
+                                  {h3_sentence}
+                                </h3>
+                              );
+                            })}
                           </AbsoluteFill>
                           ;
                         </Series.Sequence>
@@ -70,7 +92,29 @@ export const HoroscopeComponent: React.FC = (props) => {
             </Series.Sequence>
           );
         })}
+
+        <Series.Sequence durationInFrames={3 * videoConfig.fps}>
+          <AbsoluteFill
+            style={{
+              top: "15%",
+              textAlign: "center",
+            }}
+          >
+            <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
+              Manifest Your Dream Life
+            </h1>
+            <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
+              Attract Money, Love & Success
+            </h1>
+            <h1 style={{ color: "#FFF", fontSize: "100px" }}>Link in Bio</h1>
+          </AbsoluteFill>
+        </Series.Sequence>
       </Series>
+      <AbsoluteFill>
+        <VideoProgress duration={videoConfig.durationInFrames} />
+      </AbsoluteFill>
+
+      <h3>Subscribe!</h3>
     </AbsoluteFill>
   );
 };

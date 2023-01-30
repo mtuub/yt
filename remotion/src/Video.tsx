@@ -1,11 +1,11 @@
 import { Composition } from "remotion";
 import React from "react";
 import { HoroscopeComponent } from "./Horoscope";
-import horoscopes from "../../output/horoscopes_with_subtitles_images.json";
+import horoscopes from "../../output/horoscope_with_subtitles.json";
 import "./style.css";
 
-export const RemotionVideo: React.FC = () => {
-  const sign = "aries";
+export const RemotionVideo = () => {
+  const sign = "sagittarius";
   const horoscopeWithSubtitles = horoscopes.find(
     (h) => h.horoscope.sign === sign
   );
@@ -18,7 +18,7 @@ export const RemotionVideo: React.FC = () => {
     <Composition
       id="Horoscope"
       component={HoroscopeComponent}
-      durationInFrames={24 * Math.round(video_duration)}
+      durationInFrames={24 * Math.round(video_duration + 3)}
       fps={24}
       height={1080}
       width={1920}
