@@ -22,7 +22,6 @@ jobs:
       #   run: echo ${{ env.json_include }}
 
       - run: |
-        file_contents=$(cat signs.json)
-        json_string=$(echo "$file_contents" | jq -c .)
-        echo "The string representation of the JSON is: $json_string"
-
+          file_contents=$(cat signs.json)
+          json_string=$(echo "$file_contents" | jq -c .)
+          echo "The string representation of the JSON is: $json_string"
