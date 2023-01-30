@@ -24,4 +24,9 @@ jobs:
       - run: |
           file_contents=$(cat signs.json)
           json_string=$(echo "$file_contents" | jq -c .)
-          echo "The string representation of the JSON is: $json_string"
+          echo "SIGNS=$json_string" >> $GITHUB_ENV
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - run: echo ${{env.SIGNS}}
