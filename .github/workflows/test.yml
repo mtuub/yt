@@ -13,4 +13,4 @@ jobs:
       matrix:
         sign: fromJson( ${{ env.SIGNS }} )
     steps:
-      run: echo ${{ matrix.sign }}
+      - run: echo ${{ matrix.sign }}
