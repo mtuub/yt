@@ -1,50 +1,25 @@
 import axios from "axios";
-import { writeFile } from "fs/promises";
-import { sleep } from "../utils";
+import fs from "fs/promises";
+import { getUserAgent } from "../utils";
 
-require("dotenv").config();
+async function scaleImage(img_path: string, save_path: string) {
+  const imageAsBase64 = await fs.readFile(img_path, "base64");
 
-async function createDeployment(): Promise<string> {
+  const headers = {
+    "user-agent": getUserAgent(),
+    origin: "https://zyro.com",
+    referrer: "https://zyro.com/",
+  };
+  const data = {
+    image_data: imageAsBase64,
+  };
   const response = await axios.post(
-    "https://api.vercel.com/v13/deployments?forceNew=1",
-    {
-      name: "image-scaler-api",
-      deploymentId: "dpl_Djhi1viVdTmrwM7pw9xumrg46kw8",
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
-      },
-    }
+    `https://upscaler.zyro.com/v1/ai/image-upscaler`,
+    data,
+    { headers }
   );
-  return `https://${response.data.url}`;
+  const base64Image = response.data.upscaled.split(";base64,").pop();
+  await fs.writeFile(save_path, base64Image, { encoding: "base64" });
 }
 
-async function scaleImage(
-  url: string,
-  scale: number,
-  save_path: string,
-  deploy_url: string
-): Promise<void> {
-  const response = await axios.post(
-    deploy_url,
-    {
-      url,
-      scale,
-    },
-    { responseType: "arraybuffer" }
-  );
-  await writeFile(save_path, response.data);
-}
-
-async function pollDeployment(deploy_url: string): Promise<void> {
-  const response = await axios.get(deploy_url);
-  if (response.data === "Image scaler API is running") {
-    return;
-  } else {
-    await sleep(3000);
-    await pollDeployment(deploy_url);
-  }
-}
-
-export { createDeployment, scaleImage, pollDeployment };
+export { scaleImage };
