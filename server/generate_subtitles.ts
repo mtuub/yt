@@ -12,7 +12,7 @@ import { createSubtitlesForAudio } from "./services/subtitles";
   const sign_horoscope = horoscopes.find((h) => h.sign === sign);
 
   const subtitles: SubtitleData[] = await createSubtitlesForAudio(
-    `output/${sign}.mp3`
+    `output/audios/${sign}.mp3`
   );
   const horoscope_with_subtitles: HoroscopeWithSubtitles = {
     horoscope: sign_horoscope,

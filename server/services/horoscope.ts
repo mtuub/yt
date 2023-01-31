@@ -13,6 +13,7 @@ async function getHoroscopeTomorrowAllCategories(): Promise<Horoscope[]> {
     return {
       ...h,
       sign: h.sign.toLowerCase(),
+      horoscope: h.horoscope.replace("Regarding career, ", ""),
     };
   });
 }

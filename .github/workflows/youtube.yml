@@ -1,7 +1,8 @@
 name: Create youtube video
 env:
   HOROSCOPE_API_URL: ${{secrets.HOROSCOPE_API_URL}}
-  VERCEL_TOKEN: ${{secrets.VERCEL_TOKEN}}
+  PICTORY_REFRESH_TOKEN: ${{secrets.PICTORY_REFRESH_TOKEN}}
+  PICTORY_CLIENT_ID: ${{secrets.PICTORY_CLIENT_ID}}
 
 on:
   push:
@@ -21,106 +22,53 @@ jobs:
           path: ./output
           retention-days: 1
 
-  # generate-tts-1:
-  #   runs-on: ubuntu-latest
-  #   needs: scrape-horoscopes
-  #   strategy:
-  #     matrix:
-  #       sign: ["aries", "taurus", "gemini", "cancer", "leo", "virgo"]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - uses: FedericoCarboni/setup-ffmpeg@v2
-  #       id: setup-ffmpeg
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_tts.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
+  generate-tts:
+    runs-on: ubuntu-latest
+    needs: scrape-horoscopes
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_tts.js
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
 
-  # generate-tts-2:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-tts-1
-  #   strategy:
-  #     matrix:
-  #       sign:
-  #         ["libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - uses: FedericoCarboni/setup-ffmpeg@v2
-  #       id: setup-ffmpeg
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_tts.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
+  generate-subtitles:
+    runs-on: ubuntu-latest
+    needs: generate-tts
+    strategy:
+      matrix:
+        sign: ["aries"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_subtitles.js ${{ matrix.sign }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
 
-  # generate-subtitles:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-tts-2
-  #   strategy:
-  #     matrix:
-  #       sign:
-  #         [
-  #           "aries",
-  #           "taurus",
-  #           "gemini",
-  #           "cancer",
-  #           "leo",
-  #           "virgo",
-  #           "libra",
-  #           "scorpio",
-  #           "sagittarius",
-  #           "capricorn",
-  #           "aquarius",
-  #           "pisces",
-  #         ]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_subtitles.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
-
-  # merge-subtitles:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-subtitles
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/merge_subtitles.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
-
-  # generate-images-1:
-  #   runs-on: ubuntu-latest
-  #   needs: merge-subtitles
-  #   strategy:
-  #     matrix:
-  #       sign: ["aries", "taurus", "gemini", "cancer", "leo", "virgo"]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_img.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
+  generate-images-1:
+    runs-on: ubuntu-latest
+    needs: merge-subtitles
+    strategy:
+      matrix:
+        sign: ["aries"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_img.js ${{ matrix.sign }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
 
   # generate-images-2:
   #   runs-on: ubuntu-latest
@@ -142,30 +90,16 @@ jobs:
 
   render-videos:
     runs-on: ubuntu-latest
-    # needs: generate-images-2
+    needs: generate-images-1
     strategy:
       matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
+        sign: ["aries"]
     steps:
       - uses: actions/checkout@v2
-      # - uses: actions/download-artifact@v3
-      - uses: dawidd6/action-download-artifact@v2
-        with:
-          run_id: 4042410763
+      - uses: actions/download-artifact@v3
+      # - uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     run_id: 4042410763
       - run: npm install remotion react react-dom @remotion/cli
       - run: npx remotion render remotion/src/index.tsx  Horoscope output/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
       - uses: actions/upload-artifact@v3

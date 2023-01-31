@@ -5,11 +5,11 @@ import { HoroscopeWithSubtitles } from "./types";
 import { downloadFile } from "./utils";
 
 (async () => {
-  const horoscopes: HoroscopeWithSubtitles[] = JSON.parse(
-    await fs.readFile("output/horoscope_with_subtitles.json", "utf-8")
-  );
   const sign = process.argv[2].toLowerCase();
-  const horoscope = horoscopes.find((h) => h.horoscope.sign === sign);
+
+  const horoscope: HoroscopeWithSubtitles = JSON.parse(
+    await fs.readFile(`output/subtitles/${sign}.json`, "utf-8")
+  );
 
   try {
     await fs.mkdir(`output/images`, { recursive: true });

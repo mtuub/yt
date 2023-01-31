@@ -1,39 +1,77 @@
 import axios from "axios";
+import { getUserAgent } from "../utils";
+import fs from "fs/promises";
+require("dotenv").config();
 
-const IdToken =
-  "eyJraWQiOiJYQ1I1MGY0UjJEZGhDcmtRMlE5SXlXTVlWNmVraFlkZWhIZXlFWnJuV3BBPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIyMjhkZTc1OS03NGQzLTRmYjMtOGExMi1hZDgyZDU3YmU1YWEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTIuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0yX3NsVEM5RFlweiIsImNvZ25pdG86dXNlcm5hbWUiOiIyMjhkZTc1OS03NGQzLTRmYjMtOGExMi1hZDgyZDU3YmU1YWEiLCJhdWQiOiIxMHB0M2JvdXRiNTN0YW9zZjQ2OThobW9wdCIsImV2ZW50X2lkIjoiZmY1OWIwOTctYzM2NS00NmJmLWI5NzQtMDczMTBmZjBjNTVmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2NzQ5MDI3ODYsIm5hbWUiOiJ5dXZyYWoiLCJjdXN0b206bGVhZF9zb3VyY2UiOiJPdGhlciIsImV4cCI6MTY3NTA3NDMyNiwiaWF0IjoxNjc1MDcwNzI2LCJlbWFpbCI6Inl1dnJhajEwOGNAZ21haWwuY29tIn0.dozH29AdfEipuXG36fMTUmAaCn0X0-1Lpu1iYuzixxwEHQbcIsZXOcE9mKeiv1PTn0VRppAKl1wsow7cSMSeGoiJzVCCC5IVnTcijHRXzYrdhCFwRb_DDDLd4LIeDd1PogTsLNku5C3ClO8wv-B416XNi69Ha_lAhLb38Abfk3WVFJ4cf8Q8En9ekFR_4qtKjAulfpm38AbAl2ejxWLURWFpWzLFWBjzbj1EMxtTOaMXLo4ch05hXcF44yokaJIRsWR9087Ae9JfGBPuwaXLrT9nbLps7IIr1gDkjhwKFMC-6BQ-S7f7pdM6mJ-62Xjbqk0YfSON9kUBB44nKTWRsQ";
 const headers = {
-  authorization: IdToken,
-  "user-agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+  "user-agent": getUserAgent(),
   origin: "https://app.pictory.ai",
   referer: "https://app.pictory.ai/",
 };
 const baseUrl = "https://api.pictory.ai/asset-search/api/v2";
+const pictory_token_path = "assets/pictory_id_token.txt";
 
-async function fetchVideoThumbnails(query: string): Promise<string[]> {
+async function fetchVideoThumbnails(
+  query: string,
+  id_token: string
+): Promise<string[]> {
   const response = await axios.get(
     `${baseUrl}/videos/premium/search?keywords=${query}&aspectratio=horizontal&page=1`,
-    { headers }
+    { headers: { ...headers, authorization: `Bearer ${id_token}` } }
   );
   return response.data[0].data.map((x) => x.preview_jpg);
 }
 
-async function getKeywordSuggestions(sentence: string): Promise<string[]> {
+async function getKeywordSuggestions(
+  sentence: string,
+  id_token: string
+): Promise<string[]> {
   const response = await axios.post(
     `${baseUrl}/keywords/suggestion`,
     {
       sentence,
     },
-    { headers }
+    { headers: { ...headers, authorization: `Bearer ${id_token}` } }
   );
   return response.data;
 }
 
 async function getVideoThumbnails(sentence: string): Promise<string[]> {
-  // const keywords = await getKeywordSuggestions(sentence);
-  const video_thumbnails = await fetchVideoThumbnails(sentence);
+  const id_token = await getIdToken();
+
+  const video_thumbnails = await fetchVideoThumbnails(sentence, id_token);
   return video_thumbnails;
 }
 
-export { getVideoThumbnails };
+async function refreshPictoryToken(): Promise<void> {
+  const data = {
+    ClientId: process.env.PICTORY_CLIENT_ID,
+    AuthFlow: "REFRESH_TOKEN_AUTH",
+    AuthParameters: {
+      REFRESH_TOKEN: process.env.PICTORY_REFRESH_TOKEN,
+      DEVICE_KEY: null,
+    },
+  };
+
+  const response = await axios.post(
+    `https://cognito-idp.us-east-2.amazonaws.com/`,
+    data,
+    {
+      headers: {
+        ...headers,
+        "content-type": "application/x-amz-json-1.1",
+        "x-amz-user-agent": "aws-amplify/5.0.4 js",
+        "x-amz-target": "AWSCognitoIdentityProviderService.InitiateAuth",
+      },
+    }
+  );
+  const id_token = response.data.AuthenticationResult.IdToken;
+  await fs.writeFile(pictory_token_path, id_token);
+}
+
+async function getIdToken(): Promise<string> {
+  const id_token = await fs.readFile(pictory_token_path, "utf-8");
+  return id_token;
+}
+
+export { getVideoThumbnails, refreshPictoryToken };
