@@ -8,18 +8,18 @@ on:
     branches: master
 
 jobs:
-  # scrape-horoscopes:
-  #   name: Scrape Horsocope
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@main
-  #     - run: npm run install-build
-  #     - run: node build/server/scrape_horoscopes.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
+  scrape-horoscopes:
+    name: Scrape Horsocope
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - run: npm run install-build
+      - run: node build/server/scrape_horoscopes.js
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
 
   # generate-tts-1:
   #   runs-on: ubuntu-latest

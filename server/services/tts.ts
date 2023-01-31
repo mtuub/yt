@@ -1,46 +1,26 @@
 import axios from "axios";
 import fs from "fs/promises";
-import { OverdubResponse } from "../types";
-import { sleep } from "../utils";
-require("dotenv").config();
+import { getUserAgent } from "../utils";
 
-async function convertTTSDescript(
-  text: string,
-  save_path: string
-): Promise<void> {
-  const overdub: OverdubResponse = await createOverdub(
+async function convertTTS(text: string, save_path: string): Promise<void> {
+  const data = {
     text,
-    "6510c9b3-4ff0-4d09-8741-cca2c23e100f"
-  ); //carla
-  const audio_url = await pollGetOverdub(overdub.id);
-  const audio = await axios.get(audio_url, { responseType: "arraybuffer" });
+    voice: "en-US-CoraNeural",
+  };
+  const headers = {
+    "user-agent": getUserAgent(),
+    referer: "https://www.veed.io/",
+  };
+  const response = await axios.post(
+    `https://www.veed.io/api/v1/subtitles/synthesize`,
+    data,
+    { headers }
+  );
+  const audio = await axios.get(response.data.data.synthesisResult.audioURL, {
+    headers,
+    responseType: "arraybuffer",
+  });
   await fs.writeFile(save_path, audio.data);
 }
 
-async function createOverdub(
-  text: string,
-  voice_id: string
-): Promise<OverdubResponse> {
-  const response = await axios.post(
-    `${process.env.HOROSCOPE_API_URL}:5500/overdub`,
-    {
-      text,
-      voice_id,
-    }
-  );
-  return response.data;
-}
-
-async function pollGetOverdub(id: string): Promise<string> {
-  try {
-    const response = await axios.get(
-      `${process.env.HOROSCOPE_API_URL}:5500/overdub/${id}`
-    );
-    return response.data.url;
-  } catch (error) {
-    await sleep(2000);
-    return pollGetOverdub(id);
-  }
-}
-
-export default convertTTSDescript;
+export default convertTTS;
