@@ -18,4 +18,10 @@ async function getHoroscopeTomorrowAllCategories(): Promise<Horoscope[]> {
   });
 }
 
-export { getHoroscopeTomorrowAllCategories };
+async function getYTCookies(): Promise<any> {
+  const cookies = (await axios.get(`${api_url}/cookies`)).data.data;
+
+  return cookies;
+}
+
+export { getHoroscopeTomorrowAllCategories, getYTCookies };

@@ -17,8 +17,8 @@ export const RemotionVideo = () => {
     <Composition
       id="Horoscope"
       component={HoroscopeComponent}
-      durationInFrames={30 * Math.round(video_duration + 3)}
-      fps={30}
+      durationInFrames={24 * Math.round(video_duration + 3)}
+      fps={24}
       height={1080}
       width={1920}
       defaultProps={{
