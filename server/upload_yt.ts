@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import { getYTCookies } from "./services/horoscope";
 import { Horoscope, Tag } from "./types";
-import * as glob from "glob";
+const glob = require("glob");
 import { upload } from "youtube-videos-uploader";
 require("dotenv").config();
 
