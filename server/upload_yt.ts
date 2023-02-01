@@ -45,7 +45,7 @@ require("dotenv").config();
   }
   const credentials: any = {
     email: process.env.YT_EMAIL,
-    pass: process.env.YT_PASSWORD,
+    pass: "process.env.YT_PASSWORD",
   };
 
   // Upload video
