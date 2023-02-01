@@ -3,7 +3,7 @@ export interface SubtitleData {
   from: number;
   to: number;
   sub_sentences: SubSentence[];
-  image_url?: string;
+  video_url?: string;
 }
 
 export interface SubSentence {

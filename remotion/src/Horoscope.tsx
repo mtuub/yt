@@ -1,22 +1,19 @@
 import React from "react";
-import {
-  AbsoluteFill,
-  Audio,
-  Img,
-  Series,
-  useVideoConfig,
-  useCurrentFrame,
-} from "remotion";
+import { AbsoluteFill, Audio, Video, Series, useVideoConfig } from "remotion";
 import { HoroscopeWithSubtitles } from "./types";
 import { splitStringToWord } from "./utils";
 import { VideoProgress } from "./VideoProgress";
 
 export const HoroscopeComponent = (props) => {
   const videoConfig = useVideoConfig();
-  const frame = useCurrentFrame();
 
   const horoscope_with_subtitles_and_images: HoroscopeWithSubtitles =
     props.horoscopeWithSubtitles;
+
+  const video_duration =
+    horoscope_with_subtitles_and_images.subtitles[
+      horoscope_with_subtitles_and_images.subtitles.length - 1
+    ].to;
   return (
     <AbsoluteFill>
       <Audio
@@ -27,21 +24,21 @@ export const HoroscopeComponent = (props) => {
         {horoscope_with_subtitles_and_images.subtitles.map((subtitle, sIdx) => {
           return (
             <Series.Sequence
-              from={Math.round(subtitle.from * videoConfig.fps)}
-              durationInFrames={Math.round(
+              from={Math.floor(subtitle.from * videoConfig.fps)}
+              durationInFrames={Math.floor(
                 sIdx ===
                   horoscope_with_subtitles_and_images.subtitles.length - 1
-                  ? subtitle.to
+                  ? video_duration
                   : (horoscope_with_subtitles_and_images.subtitles[sIdx + 1]
                       .from -
                       subtitle.from) *
                       videoConfig.fps
               )}
             >
-              <Img
+              <Video
                 height={videoConfig.height}
                 width={videoConfig.width}
-                src={require(`../../output/scaled_images/${horoscope_with_subtitles_and_images.horoscope.sign}_${sIdx}_scaled.jpg`)}
+                src={subtitle.video_url}
               />
 
               <Series>
@@ -57,7 +54,7 @@ export const HoroscopeComponent = (props) => {
 
                       return (
                         <Series.Sequence
-                          durationInFrames={Math.round(
+                          durationInFrames={Math.floor(
                             (word_alignment.to - word_alignment.from) *
                               videoConfig.fps
                           )}
@@ -100,7 +97,16 @@ export const HoroscopeComponent = (props) => {
           );
         })}
 
-        <Series.Sequence durationInFrames={3 * videoConfig.fps}>
+        <Series.Sequence
+          from={Math.floor(
+            (horoscope_with_subtitles_and_images.subtitles[
+              horoscope_with_subtitles_and_images.subtitles.length - 1
+            ].to +
+              0.5) *
+              videoConfig.fps
+          )}
+          durationInFrames={3 * videoConfig.fps}
+        >
           <AbsoluteFill
             style={{
               top: "15%",
