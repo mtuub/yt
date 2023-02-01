@@ -3,9 +3,6 @@ import { getHoroscopeTomorrowAllCategories } from "./services/horoscope";
 
 (async () => {
   const horoscope_data = await getHoroscopeTomorrowAllCategories();
-  await fs.writeFile(
-    "output/horoscope.json",
-    JSON.stringify(horoscope_data.slice(0, 1)) // TODO: remove slice
-  );
+  await fs.writeFile("output/horoscope.json", JSON.stringify(horoscope_data));
   console.log("Horoscopes scraped successfully..");
 })();
