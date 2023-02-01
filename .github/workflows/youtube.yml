@@ -1,8 +1,6 @@
 name: Create youtube video
 env:
-  HOROSCOPE_API_URL: ${{secrets.HOROSCOPE_API_URL}}
-  PICTORY_REFRESH_TOKEN: ${{secrets.PICTORY_REFRESH_TOKEN}}
-  PICTORY_CLIENT_ID: ${{secrets.PICTORY_CLIENT_ID}}
+  API_URL: ${{secrets.API_URL}}
 
 on:
   push:
@@ -36,7 +34,7 @@ jobs:
           path: ./output
           retention-days: 1
 
-  generate-subtitles:
+  generate-subtitles-and-get-videos-urls:
     runs-on: ubuntu-latest
     needs: generate-tts
     strategy:
@@ -46,51 +44,16 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
       - run: npm run install-build
-      - run: node build/server/generate_subtitles.js ${{ matrix.sign }}
+      - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
       - uses: actions/upload-artifact@v3
         with:
           name: output
           path: ./output
           retention-days: 1
-
-  generate-images-1:
-    runs-on: ubuntu-latest
-    needs: generate-subtitles
-    strategy:
-      matrix:
-        sign: ["aries"]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_img.js ${{ matrix.sign }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
-
-  # generate-images-2:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-images-1
-  #   strategy:
-  #     matrix:
-  #       sign:
-  #         ["libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_img.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
 
   render-videos:
     runs-on: ubuntu-latest
-    needs: generate-images-1
+    needs: generate-subtitles-and-get-videos-urls
     strategy:
       matrix:
         sign: ["aries"]
@@ -101,7 +64,24 @@ jobs:
       #   with:
       #     run_id: 4042410763
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
+      - run: mkdir output/videos
+      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
+
+  upload-yt:
+    runs-on: ubuntu-latest
+    needs: render-videos
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_thumbnails.js
+      - run: node build/server/generate_tags.js
+      # uplooad yt
       - uses: actions/upload-artifact@v3
         with:
           name: output
