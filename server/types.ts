@@ -32,3 +32,8 @@ export interface HoroscopeWithSubtitles {
   horoscope: Horoscope;
   subtitles: SubtitleData[];
 }
+
+export interface Tag {
+  sign: string;
+  tags: string[];
+}
