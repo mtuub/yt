@@ -11,6 +11,7 @@
     "dependencies": {
         "axios": "^1.2.3",
         "dotenv": "^16.0.3",
+        "get-audio-duration": "^3.1.1",
         "sharp": "^0.31.3"
     }
 }
