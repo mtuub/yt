@@ -86,8 +86,7 @@ jobs:
       # - run: node build/server/generate_thumbnails.js
       # - run: node build/server/generate_tags.js
       - run: node build/server/upload_yt.js
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+      # - uses: kolpav/purge-artifacts-action@v1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     expire-in: 0days # Setting this to 0 will delete all artifacts
