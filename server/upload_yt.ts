@@ -36,10 +36,10 @@ require("dotenv").config();
       path: `output/videos/${horoscope.sign}.mp4`,
       thumbnail: `output/thumbnails/${horoscope.sign}.png`,
       title: `${capitalized} Horoscope - ${horoscope.date}`,
-      tags: tag,
+      // tags: tag,
       description: `Manifest Love & Money 2023: ${
         process.env.AFFLIATE_LINK
-      } \n#${horoscope.sign}\nTags: (${tag.join(", ")})`,
+      } \n\nTags: (${tag.join(", ")})`,
     };
     video_datas.push(data);
   }
@@ -56,8 +56,7 @@ require("dotenv").config();
       upload(credentials, video_datas, {
         executablePath: file_path[0],
         // headless: false,
-      });
-      //   .then(console.log);
+      }).then();
     }
   );
 })();
