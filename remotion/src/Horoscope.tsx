@@ -20,15 +20,22 @@ export const HoroscopeComponent = (props) => {
   return (
     <AbsoluteFill>
       <Audio
-        src={require(`../../output/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
+        src={require(`../../output/audios/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
       />
 
       <Series>
         {horoscope_with_subtitles_and_images.subtitles.map((subtitle, sIdx) => {
           return (
             <Series.Sequence
+              from={Math.round(subtitle.from * videoConfig.fps)}
               durationInFrames={Math.round(
-                (subtitle.to - subtitle.from) * videoConfig.fps
+                sIdx ===
+                  horoscope_with_subtitles_and_images.subtitles.length - 1
+                  ? subtitle.to
+                  : (horoscope_with_subtitles_and_images.subtitles[sIdx + 1]
+                      .from -
+                      subtitle.from) *
+                      videoConfig.fps
               )}
             >
               <Img

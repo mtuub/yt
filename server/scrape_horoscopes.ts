@@ -5,7 +5,7 @@ import { getHoroscopeTomorrowAllCategories } from "./services/horoscope";
   const horoscope_data = await getHoroscopeTomorrowAllCategories();
   await fs.writeFile(
     "output/horoscope.json",
-    JSON.stringify(horoscope_data.slice(0, 1)) // TODO: remove slice + refresh pictory token
+    JSON.stringify(horoscope_data.slice(0, 1)) // TODO: remove slice
   );
   console.log("Horoscopes scraped successfully..");
 })();

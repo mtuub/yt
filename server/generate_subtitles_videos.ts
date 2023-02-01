@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import { Horoscope, HoroscopeWithSubtitles, SubtitleData } from "./types";
 import { createSubtitlesForAudio } from "./services/subtitles";
+import { getVideoSuggestion } from "./services/video_search";
 
 (async () => {
   const sign = process.argv[2].toLowerCase();
@@ -14,6 +15,15 @@ import { createSubtitlesForAudio } from "./services/subtitles";
   const subtitles: SubtitleData[] = await createSubtitlesForAudio(
     `output/audios/${sign}.mp3`
   );
+
+  // Get video suggestions
+  for (let idx = 0; idx < subtitles.length; idx++) {
+    const subtitle = subtitles[idx];
+    const video_url = await getVideoSuggestion(subtitle.sentence);
+    subtitle.video_url = video_url;
+    console.log(`Video retrieved: ${idx} / ${subtitles.length} done.`);
+  }
+
   const horoscope_with_subtitles: HoroscopeWithSubtitles = {
     horoscope: sign_horoscope,
     subtitles,

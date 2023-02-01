@@ -1,14 +1,12 @@
 import { Composition, getInputProps } from "remotion";
 import React from "react";
 import { HoroscopeComponent } from "./Horoscope";
-import horoscopes from "../../output/horoscope_with_subtitles.json";
+import horoscopeWithSubtitles from "../../output/subtitles/aries.json";
 import "./style.css";
 
 export const RemotionVideo = () => {
-  const { sign } = getInputProps();
-  const horoscopeWithSubtitles = horoscopes.find(
-    (h) => h.horoscope.sign === sign
-  );
+  // const { sign } = getInputProps();
+
   const video_duration: any =
     horoscopeWithSubtitles?.subtitles[
       horoscopeWithSubtitles.subtitles.length - 1
