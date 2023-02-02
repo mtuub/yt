@@ -2,23 +2,27 @@ name: Create youtube video
 on:
   push:
     branches: master
+env:
+  frames_per_worker: 100
 
 jobs:
   render-videos:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        worker: [0]
+        worker: [0, 1]
     steps:
       - uses: actions/checkout@v2
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+      # - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      - run: echo "end=$((9+${{matrix.worker}}))" >> $GITHUB_ENV
+      - run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}+1))" >> $GITHUB_ENV
+      - run: echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}))" >> $GITHUB_ENV
+      - run: echo ${{env.start}} - ${{env.end}}
 
-      - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{env.end}}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+      # - run: npm install remotion react react-dom @remotion/cli
+      # - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{env.end}}
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: output
+      #     path: ./output
+      #     retention-days: 1
