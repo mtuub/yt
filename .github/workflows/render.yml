@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=0-10"
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=0-10
       - uses: actions/upload-artifact@v3
         with:
           name: output
