@@ -26,6 +26,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache-key: ${{ steps.setup-node.outputs.cache-key }}
-
+          cache-dependency-path: |
+            node_modules
       - run: npm run build
