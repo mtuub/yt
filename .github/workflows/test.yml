@@ -12,8 +12,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache-dependency-path: |
-            node_modules
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -26,6 +25,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache-dependency-path: |
-            node_modules
+          cache: npm
       - run: npm run build
