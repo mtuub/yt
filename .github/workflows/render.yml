@@ -6,11 +6,14 @@ on:
 jobs:
   render-videos:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        worker: [0, 10, 20, 30, 40, 50]
     steps:
       - uses: actions/checkout@v2
       - uses: FedericoCarboni/setup-ffmpeg@v2
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=0-10
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{matrix.worker + 9}}
       - uses: actions/upload-artifact@v3
         with:
           name: output
