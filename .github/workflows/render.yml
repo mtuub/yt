@@ -1,0 +1,14 @@
+name: Create youtube video
+on:
+  push:
+    branches: master
+
+jobs:
+  steps:
+    - uses: actions/checkout@v2
+    - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=0-10"
+    - uses: actions/upload-artifact@v3
+      with:
+        name: output
+        path: ./output
+        retention-days: 1
