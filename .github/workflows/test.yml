@@ -34,5 +34,5 @@ jobs:
       #     path: ~/.npm
       #     key: ${{ steps.cache-npm-build.outputs.cache-primary-key }}
 
-      - run: npm run build
+      # - run: npm run build
       - run: echo  ${{ steps.cache-npm-build.outputs.cache-primary-key }}
