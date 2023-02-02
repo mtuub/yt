@@ -27,7 +27,7 @@ jobs:
           framesPerWorker=$((${{env.total_frames}}/${{matrix.worker.length}}))
           echo "frames_per_worker=$framesPerWorker" >> $GITHUB_ENV
 
-      - run: echo ${{total_frames}} ${{frames_per_worker}}
+      - run: echo ${{env.total_frames}} ${{env.frames_per_worker}}
 
       # - name: Set start frame
       #   run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
