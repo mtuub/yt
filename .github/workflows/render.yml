@@ -29,7 +29,7 @@ jobs:
         run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
 
       - name: Set end frame
-      - run: |
+        run: |
           if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
             echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
           else
