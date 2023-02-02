@@ -33,6 +33,6 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: ~/.npm
-          key: ${{ env.restore_key}}
+          key: ${{ fromJson(env.restore_key).cache-key }}
 
       - run: npm run build
