@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: FedericoCarboni/setup-ffmpeg@v2
-      - run: echo ${{ $((1+1))}}
+      - run: echo  $((1+${{matrix.worker}}))
       # - run: npm install remotion react react-dom @remotion/cli
       # - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{matrix.worker}}
       # - uses: actions/upload-artifact@v3
