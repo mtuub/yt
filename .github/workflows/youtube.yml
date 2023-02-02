@@ -23,98 +23,98 @@ jobs:
           path: ./output
           retention-days: 1
 
-  generate-tts:
-    runs-on: ubuntu-latest
-    needs: scrape-horoscopes
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_tts.js
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  # generate-tts:
+  #   runs-on: ubuntu-latest
+  #   needs: scrape-horoscopes
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/download-artifact@v3
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_tts.js
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  generate-subtitles-and-get-videos-urls:
-    runs-on: ubuntu-latest
-    needs: generate-tts
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  # generate-subtitles-and-get-videos-urls:
+  #   runs-on: ubuntu-latest
+  #   needs: generate-tts
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/download-artifact@v3
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  render-videos:
-    runs-on: ubuntu-latest
-    needs: generate-subtitles-and-get-videos-urls
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
+  # render-videos:
+  #   runs-on: ubuntu-latest
+  #   needs: generate-subtitles-and-get-videos-urls
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/download-artifact@v3
 
-      - run: npm install remotion react react-dom @remotion/cli
-      - run: mkdir output/videos
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  #     - run: npm install remotion react react-dom @remotion/cli
+  #     - run: mkdir output/videos
+  #     - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  upload-yt:
-    runs-on: ubuntu-latest
-    needs: render-videos
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-      # - uses: dawidd6/action-download-artifact@v2
-      #   with:
-      #     run_id: 4066485073
-      - run: npm run install-build
-      - run: node build/server/generate_thumbnails.js
-      - run: node build/server/generate_tags.js
-      - run: node build/server/upload_yt.js
-      - uses: kolpav/purge-artifacts-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          expire-in: 0days # Setting this to 0 will delete all artifacts
+  # upload-yt:
+  #   runs-on: ubuntu-latest
+  #   needs: render-videos
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/download-artifact@v3
+  #     # - uses: dawidd6/action-download-artifact@v2
+  #     #   with:
+  #     #     run_id: 4066485073
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_thumbnails.js
+  #     - run: node build/server/generate_tags.js
+  #     - run: node build/server/upload_yt.js
+  #     - uses: kolpav/purge-artifacts-action@v1
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         expire-in: 0days # Setting this to 0 will delete all artifacts
