@@ -2,7 +2,7 @@ name: Caching with npm
 on: push
 
 jobs:
-  cache-npm-build:
+  cache-node-modules:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,10 +21,11 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - run: echo "{restore_key}={{ steps.cache-node-modules.outputs.cache-key }}" >> $GITHUB_ENV
 
   check:
     runs-on: ubuntu-latest
-    needs: cache-npm-build
+    needs: cache-node-modules
     steps:
       - uses: actions/checkout@v3
 
@@ -32,6 +33,6 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ env.restore_key}}
 
       - run: npm run build
