@@ -18,14 +18,16 @@ jobs:
 
       - name: Render audio & Get total frames
         run: |
-          output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-50)
+          output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-10)
           value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
           echo "total_frames=$value" >> $GITHUB_ENV
 
-      # - name: Set frames per worker
-      #   run: |
-      #     framesPerWorker=$((${{env.total_frames}}/${{worker.length}}))
-      #     echo "frames_per_worker=$framesPerWorker" >> $GITHUB_ENV
+      - name: Set frames per worker
+        run: |
+          framesPerWorker=$((${{env.total_frames}}/${{worker.length}}))
+          echo "frames_per_worker=$framesPerWorker" >> $GITHUB_ENV
+
+      - run: echo ${{total_frames}} ${{frames_per_worker}}
 
       # - name: Set start frame
       #   run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
