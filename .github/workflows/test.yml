@@ -27,4 +27,11 @@ jobs:
     needs: cache-npm-build
     steps:
       - uses: actions/checkout@v3
+
+      - name: Restore cached npm
+        uses: actions/cache/restore@v3
+        with:
+          path: ~/.npm
+          key: ${{ steps.cache-npm-build.outputs.cache-primary-key }}
+
       - run: npm run build
