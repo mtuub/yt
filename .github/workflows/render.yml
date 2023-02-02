@@ -12,9 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: FedericoCarboni/setup-ffmpeg@v2
-      - run: end=$((9+${{matrix.worker}}))
+      - uses: actions/set-env@v2
+        with:
+          name: end
+          value: $((9+${{matrix.worker}}))
+
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-$end
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{env.end}}
       - uses: actions/upload-artifact@v3
         with:
           name: output
