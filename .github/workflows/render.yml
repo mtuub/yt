@@ -26,11 +26,11 @@ jobs:
 
       - run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
 
-      - if: ${{matrix.worker}} < ${{matrix.length}} - 1
-        run: echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
+      - run: echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
+        if: ${{matrix.worker}} < ${{matrix.length}} - 1
 
-      - if: ${{matrix.worker}} == ${{matrix.length}} - 1
-        run: echo "end=${{env.total_frames}}" >> $GITHUB_ENV
+      - run: echo "end=${{env.total_frames}}" >> $GITHUB_ENV
+        if: ${{matrix.worker}} == ${{matrix.length}} - 1
 
       - echo: ${{env.start}} ${{env.end}}
       # - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
