@@ -14,10 +14,11 @@ jobs:
       - uses: FedericoCarboni/setup-ffmpeg@v2
       - uses: allenevans/set-env@v2.0.0
         with:
-          end: $((9+${{matrix.worker}}))
+          # end: $((9+${{matrix.worker}}))
+          ENV_END: 10
 
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{env.end}}
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/out.mp4 --frames=${{matrix.worker}}-${{env.ENV_END}}
       - uses: actions/upload-artifact@v3
         with:
           name: output
