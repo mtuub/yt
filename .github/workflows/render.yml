@@ -18,8 +18,8 @@ jobs:
 
       - run: npm install remotion react react-dom @remotion/cli
       - run: |
-          output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3)
-          value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{print $2}')
+          output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-50)
+          value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{print $2}' | tail -n 1)
           echo "The value is: $value"
 
       # - run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
