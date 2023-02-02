@@ -18,7 +18,7 @@ jobs:
 
       - run: npm install remotion react react-dom @remotion/cli
       - run: output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3)
-      - run: echo $ouput
+      - run: echo $output
 
       # - run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
       # - run: echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
