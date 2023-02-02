@@ -6,6 +6,20 @@ env:
   frames_per_worker: 100
 
 jobs:
+  render-audio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+      - run: npm install remotion react react-dom @remotion/cli
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
+
   render-videos:
     runs-on: ubuntu-latest
     strategy:
@@ -17,10 +31,10 @@ jobs:
 
       - run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
       - run: echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
-      - run: echo ${{env.start}} - ${{env.end}}
 
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}}
+      - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
+
       - uses: actions/upload-artifact@v3
         with:
           name: output
