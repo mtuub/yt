@@ -99,7 +99,7 @@ jobs:
           if [ "${{matrix.worker_id}}" -lt "$((${{env.NUM_OF_WORKERS}}-1))" ]; then
             echo "END_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
           else
-            echo "END_FRAME=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
+            echo "END_FRAME=$((${{env.TOTAL_FRAMES}}-1))" >> $GITHUB_ENV
           fi
 
       - run: echo ${{env.START_FRAME}} ${{env.END_FRAME}}
