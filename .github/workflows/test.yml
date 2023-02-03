@@ -12,7 +12,8 @@ jobs:
       num_of_workers: 2
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
-      output_path: output/aries.txt
+      output_dir: output
+      sign: aries
 
   check-artifact:
     runs-on: ubuntu-latest
