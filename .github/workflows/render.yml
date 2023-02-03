@@ -6,7 +6,7 @@ on:
 env:
   REMOTION_ENTRY_POINT: remotion/src/index.tsx
   REMOTION_COMPOSITION_ID: Horoscope
-  NUM_OF_WORKERS: 50
+  NUM_OF_WORKERS: 25
 
 jobs:
   cache-dependencies:
@@ -82,9 +82,8 @@ jobs:
         with:
           name: workflow_output
           path: ./workflow_output
-          retention-days: 1
 
-  render-video:
+  render-videos:
     runs-on: ubuntu-latest
     needs: [build-matrix, cache-dependencies, retrieve-total-frames]
     env:
@@ -127,3 +126,22 @@ jobs:
         with:
           name: workflow_output
           path: ./workflow_output
+
+  merge-videos:
+    runs-on: ubuntu-latest
+    needs: [render-videos]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - id: create list.txt with all mp4 files
+        run: find workflow_output/ -name '*.mp4' | sort -V | xargs printf "file '%s'\n" > list.txt
+
+      - id: merge all mp4 and mp3 files
+        run: ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy video.mp4
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: video
+          path: video.mp4
