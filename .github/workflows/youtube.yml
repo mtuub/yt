@@ -68,67 +68,47 @@ jobs:
             path: ./output
             retention-days: 1
 
-  render-videos:
-    runs-on: ubuntu-latest
+  call-workflow-in-local-repo:
     needs: generate-subtitles-and-get-videos-urls
     strategy:
       matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
+        sign: ["aries"]
+    uses: ./.github/workflows/reusable.yml
+    with:
+      num_of_workers: 2
+      remotion_composition_id: Horoscope
+      remotion_entry_point: remotion/src/index.tsx
+      output_path: output/videos/${{matrix.sign}}.mp4
+      sign: ${{matrix.sign}}
 
-      - run: npm install remotion react react-dom @remotion/cli
-      - run: mkdir output/videos
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
-
-  upload-videos-yt:
-    runs-on: ubuntu-latest
-    needs: render-videos
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/download-artifact@v3
-        - run: npm run install-build
-        - run: node build/server/generate_thumbnail.js ${{matrix.sign}}
-        - run: node build/server/generate_tags.js ${{matrix.sign}}
-        - run: node build/server/upload_yt.js ${{matrix.sign}}
-        # - uses: kolpav/purge-artifacts-action@v1
-        #   with:
-        #     token: ${{ secrets.GITHUB_TOKEN }}
-        #     expire-in: 0days # Setting this to 0 will delete all artifacts
+  # upload-videos-yt:
+  #   runs-on: ubuntu-latest
+  #   needs: render-videos
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #       - uses: actions/download-artifact@v3
+  #       - run: npm run install-build
+  #       - run: node build/server/generate_thumbnail.js ${{matrix.sign}}
+  #       - run: node build/server/generate_tags.js ${{matrix.sign}}
+  #       - run: node build/server/upload_yt.js ${{matrix.sign}}
+  #       # - uses: kolpav/purge-artifacts-action@v1
+  #       #   with:
+  #       #     token: ${{ secrets.GITHUB_TOKEN }}
+  #       #     expire-in: 0days # Setting this to 0 will delete all artifacts

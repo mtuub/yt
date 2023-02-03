@@ -1,9 +1,9 @@
 name: Test
 
 on:
-  push:
-    branches: master
-  # workflow_dispatch:
+  # push:
+  #   branches: master
+  workflow_dispatch:
 
 jobs:
   call-workflow-in-local-repo:

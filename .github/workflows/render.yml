@@ -11,7 +11,10 @@ on:
       remotion_composition_id:
         required: true
         type: string
-      video_name:
+      output_path:
+        required: true
+        type: string
+      sign:
         required: true
         type: string
 
@@ -19,7 +22,8 @@ env:
   REMOTION_ENTRY_POINT: ${{inputs.remotion_entry_point}}
   REMOTION_COMPOSITION_ID: ${{inputs.remotion_composition_id}}
   NUM_OF_WORKERS: ${{inputs.num_of_workers}}
-  VIDEO_NAME: ${{inputs.video_name}}
+  OUTPUT_PATH: ${{inputs.output_path}}
+  SIGN: ${{inputs.sign}}
 
 jobs:
   cache-dependencies:
@@ -55,6 +59,7 @@ jobs:
     needs: [cache-dependencies]
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -78,6 +83,8 @@ jobs:
     needs: [cache-dependencies]
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -106,6 +113,7 @@ jobs:
         worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -133,7 +141,7 @@ jobs:
           fi
 
       - name: Render muted video
-        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker_id}}.mp4 --frames=${{env.START_FRAME}}-${{env.END_FRAME}} --muted
+        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker_id}}.mp4 --frames=${{env.START_FRAME}}-${{env.END_FRAME}} --muted --props="{\"sign\":\"${{env.SIGN}}\"}"
 
       - uses: actions/upload-artifact@v3
         with:
@@ -152,9 +160,11 @@ jobs:
         run: find workflow_output/ -name '*.mp4' | sort -V | xargs printf "file '%s'\n" > list.txt
 
       - name: merge all mp4 and mp3 files
-        run: ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy video.mp4
+        run: |
+        mkdir -p $(dirname ${{env.OUTPUT_PATH}})
+        ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy ${{env.OUTPUT_PATH}}
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{env.VIDEO_NAME}}
-          path: video.mp4
+          name: output
+          path: ./output
