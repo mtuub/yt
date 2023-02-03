@@ -1,6 +1,10 @@
 name: Render video matrix
 on:
   workflow_call:
+    inputs:
+      num_of_workers:
+        required: true
+        type: number
 
 env:
   REMOTION_ENTRY_POINT: remotion/src/index.tsx
