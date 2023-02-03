@@ -19,6 +19,5 @@ import { Horoscope } from "./types";
     console.log(
       `Generated audio for ${horoscope.sign} (${idx + 1}/${horoscopes.length})`
     );
-    break; // TODO: remove
   }
 })();

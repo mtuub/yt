@@ -10,82 +10,111 @@ on:
     branches: master
 
 jobs:
-  # scrape-horoscopes:
-  #   name: Scrape Horsocope
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@main
-  #     - run: npm run install-build
-  #     - run: node build/server/scrape_horoscopes.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
-
-  # generate-tts:
-  #   runs-on: ubuntu-latest
-  #   needs: scrape-horoscopes
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_tts.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
-
-  # generate-subtitles-and-get-videos-urls:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-tts
-  #   strategy:
-  #     matrix:
-  #       sign: ["aries"]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-  #         retention-days: 1
-
-  artifacts:
+  scrape-horoscopes:
+    name: Scrape Horsocope
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dawidd6/action-download-artifact@v2
-        with:
-          run_id: 4087430351
-
+      - uses: actions/checkout@main
+      - run: npm run install-build
+      - run: node build/server/scrape_horoscopes.js
       - uses: actions/upload-artifact@v3
         with:
           name: output
           path: ./output
+          retention-days: 1
 
-  # call-workflow-in-local-repo:
-  #   needs: artifacts
-  #   strategy:
-  #     matrix:
-  #       sign: ["aries"]
-  #   uses: ./.github/workflows/render-matrix.yml
-  #   with:
-  #     num_of_workers: 10
-  #     remotion_composition_id: Horoscope
-  #     remotion_entry_point: remotion/src/index.tsx
-  #     output_path: output/videos/${{matrix.sign}}.mp4
-  #     sign: ${{matrix.sign}}
+  generate-tts:
+    runs-on: ubuntu-latest
+    needs: scrape-horoscopes
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_tts.js
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
+
+  generate-subtitles-and-get-videos-urls:
+    runs-on: ubuntu-latest
+    needs: generate-tts
+    strategy:
+      matrix:
+        sign:
+          [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces",
+          ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
+
+  call-workflow-in-local-repo:
+    needs: generate-subtitles-and-get-videos-urls
+    strategy:
+      matrix:
+        sign:
+          [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces",
+          ]
+    uses: ./.github/workflows/render-matrix.yml
+    with:
+      num_of_workers: 15
+      remotion_composition_id: Horoscope
+      remotion_entry_point: remotion/src/index.tsx
+      output_path: output/videos/${{matrix.sign}}.mp4
+      sign: ${{matrix.sign}}
 
   upload-videos-yt:
     runs-on: ubuntu-latest
-    needs: artifacts
+    needs: call-workflow-in-local-repo
     strategy:
       matrix:
-        sign: ["aries"]
+        sign:
+          [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces",
+          ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
@@ -93,7 +122,7 @@ jobs:
       - run: node build/server/generate_thumbnail.js ${{matrix.sign}}
       - run: node build/server/generate_tags.js ${{matrix.sign}}
       - run: node build/server/upload_yt.js ${{matrix.sign}}
-      # - uses: kolpav/purge-artifacts-action@v1
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     expire-in: 0days # Setting this to 0 will delete all artifacts
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 0days # Setting this to 0 will delete all artifacts
