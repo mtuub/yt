@@ -39,30 +39,27 @@ jobs:
     needs: [build-matrix, render-audio]
     env:
       TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
-    # strategy:
-    #   matrix:
-    #     worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
+    strategy:
+      matrix:
+        worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
-      # - name: Set frames per worker
-      #   run: |
-      #     framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
-      #     echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
+      - name: Set frames per worker
+        run: |
+          framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
+          echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
-      - run: echo ${{needs.build-matrix.outputs.workers_matrix}}
-      - run: echo ${{needs.render-audio.outputs.total_frames}} ${{env.TOTAL_FRAMES}}
+      - name: Set start frame
+        run: echo "START_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
 
-      # - name: Set start frame
-      #   run: echo "start=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
+      - name: Set end frame
+        run: |
+          if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
+            echo "end=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
+          else
+            echo "end=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
+          fi
 
-      # - name: Set end frame
-      #   run: |
-      #     if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
-      #       echo "end=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
-      #     else
-      #       echo "end=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
-      #     fi
-
-      # - run: echo ${{start}} ${{end}}
+      - run: echo ${{start}} ${{end}}
 
       # - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
 
