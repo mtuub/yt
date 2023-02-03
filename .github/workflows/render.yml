@@ -5,6 +5,7 @@ on:
 
 env:
   NUM_OF_WORKERS: 2
+  TOTAL_FRAMES: 0
 
 jobs:
   build-matrix:
