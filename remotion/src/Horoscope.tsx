@@ -16,7 +16,7 @@ export const HoroscopeComponent = (props) => {
     ].to;
   return (
     <AbsoluteFill>
-      <Audio src={require(`../../aries.mp3`)} />
+      <Audio src={require(`../../out.mp3`)} />
       {/* <Audio
         src={require(`../../output/audios/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
       /> */}
