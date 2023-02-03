@@ -55,7 +55,7 @@ jobs:
           retention-days: 1
 
   call-workflow-in-local-repo:
-    # needs: generate-subtitles-and-get-videos-urls
+    needs: generate-subtitles-and-get-videos-urls
     strategy:
       matrix:
         sign: ["aries"]
