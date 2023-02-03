@@ -30,11 +30,11 @@ jobs:
           value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
           echo "TOTAL_FRAMES=$value" >> $GITHUB_ENV
 
-      - run: echo ${{env.TOTAL_FRAMES}}
-
   render-video:
     runs-on: ubuntu-latest
     needs: [build-matrix, render-audio]
+    env:
+      TOTAL_FRAMES: ${{env.TOTAL_FRAMES}}
     # strategy:
     #   matrix:
     #     worker_id: ${{ fromJson(env.WORKERS_MATRIX) }}
