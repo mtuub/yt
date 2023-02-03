@@ -60,75 +60,70 @@ jobs:
     outputs:
       total_frames: ${{ steps.get-total-frames.outputs.total_frames }}
 
-  test:
+  render-audio:
     runs-on: ubuntu-latest
-    needs: [retrieve-total-frames]
+    needs: [cache-dependencies]
     steps:
-      - run: echo ${{needs.retrieve-total-frames.outputs.total_frames}}
-  # render-audio:
-  #   runs-on: ubuntu-latest
-  #   needs: [cache-dependencies]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
 
-  #     - name: Restore node modules cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - id: render-audio
-  #       run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3
+      - id: render-audio
+        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3
 
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: workflow_output
-  #         path: ./workflow_output
-  #         retention-days: 1
+      - uses: actions/upload-artifact@v3
+        with:
+          name: workflow_output
+          path: ./workflow_output
+          retention-days: 1
 
-  # render-video:
-  #   runs-on: ubuntu-latest
-  #   needs: [build-matrix, cache-dependencies, retrieve-total-frames]
-  #   env:
-  #     TOTAL_FRAMES: ${{needs.retrieve-total-frames.outputs.total_frames}}
-  #   strategy:
-  #     matrix:
-  #       worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: FedericoCarboni/setup-ffmpeg@v2
+  render-video:
+    runs-on: ubuntu-latest
+    needs: [build-matrix, cache-dependencies, retrieve-total-frames]
+    env:
+      TOTAL_FRAMES: ${{needs.retrieve-total-frames.outputs.total_frames}}
+    strategy:
+      matrix:
+        worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
 
-  #     - name: Restore node modules cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - name: Set frames per worker
-  #       run: |
-  #         framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
-  #         echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
+      - name: Set frames per worker
+        run: |
+          framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
+          echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
-  #     - name: Set start frame
-  #       run: echo "START_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
+      - name: Set start frame
+        run: echo "START_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
 
-  #     - name: Set end frame
-  #       run: |
-  #         if [ "${{matrix.worker_id}}" -lt "$((${{env.NUM_OF_WORKERS}}-1))" ]; then
-  #           echo "END_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
-  #         else
-  #           echo "END_FRAME=$((${{env.TOTAL_FRAMES}}-1))" >> $GITHUB_ENV
-  #         fi
+      - name: Set end frame
+        run: |
+          if [ "${{matrix.worker_id}}" -lt "$((${{env.NUM_OF_WORKERS}}-1))" ]; then
+            echo "END_FRAME=$((${{matrix.worker_id}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
+          else
+            echo "END_FRAME=$((${{env.TOTAL_FRAMES}}-1))" >> $GITHUB_ENV
+          fi
 
-  #     - name: Render muted video
-  #       run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker_id}}.mp4 --frames=${{env.START_FRAME}}-${{env.END_FRAME}} --muted
+      - name: Render muted video
+        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker_id}}.mp4 --frames=${{env.START_FRAME}}-${{env.END_FRAME}} --muted
 
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: workflow_output
-  #         path: ./workflow_output
+      - uses: actions/upload-artifact@v3
+        with:
+          name: workflow_output
+          path: ./workflow_output
