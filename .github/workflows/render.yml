@@ -19,6 +19,11 @@ jobs:
   render-audio:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - run: npm install remotion react react-dom @remotion/cli # TODO: replace
+
       - name: Render audio & Get total frames
         run: |
           output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-10)
