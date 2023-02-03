@@ -12,4 +12,4 @@ jobs:
       num_of_workers: 2
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
-      video_name: aries
+      output_path: aries.txt

@@ -11,7 +11,7 @@ on:
       remotion_composition_id:
         required: true
         type: string
-      video_name:
+      output_path:
         required: true
         type: string
 
@@ -19,15 +19,15 @@ env:
   REMOTION_ENTRY_POINT: ${{inputs.remotion_entry_point}}
   REMOTION_COMPOSITION_ID: ${{inputs.remotion_composition_id}}
   NUM_OF_WORKERS: ${{inputs.num_of_workers}}
-  VIDEO_NAME: ${{inputs.video_name}}
+  OUTPUT_PATH: ${{inputs.output_path}}
 
 jobs:
   create-file:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: touch "${{env.VIDEO_NAME}}.txt"
+      - run: touch ${{env.OUTPUT_PATH}}
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{env.VIDEO_NAME}}
-          path: "${{env.VIDEO_NAME}}.txt"
+          name: $(dirname "${{env.OUTPUT_PATH}}")
+          path: $(dirname "${{env.OUTPUT_PATH}}")
