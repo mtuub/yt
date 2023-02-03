@@ -6,6 +6,13 @@ import { upload } from "youtube-videos-uploader";
 require("dotenv").config();
 
 (async () => {
+  const sign = process.argv[2].toLowerCase();
+
+  const horoscopes: Horoscope[] = JSON.parse(
+    await fs.readFile("output/horoscope.json", "utf-8")
+  );
+
+  const sign_horoscope = horoscopes.find((h) => h.sign === sign);
   //   retrieve yt cookies from api
   try {
     await fs.mkdir(`yt-auth`, { recursive: true });
@@ -18,31 +25,24 @@ require("dotenv").config();
   )}.json`;
   await fs.writeFile(`yt-auth/${cookiesName}`, JSON.stringify(cookies));
 
-  const horoscopes: Horoscope[] = JSON.parse(
-    await fs.readFile("output/horoscope.json", "utf-8")
-  );
-
-  const tags: Tag[] = JSON.parse(
-    await fs.readFile(`output/tags.json`, "utf-8")
+  const tag: Tag = JSON.parse(
+    await fs.readFile(`output/tags/${sign}.json`, "utf-8")
   );
   const video_datas = [];
 
-  for (let idx = 0; idx < horoscopes.length; idx++) {
-    const horoscope = horoscopes[idx];
-    const tag = tags.find((t) => t.sign === horoscope.sign).tags;
-    const capitalized =
-      horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
-    const data = {
-      path: `output/videos/${horoscope.sign}.mp4`,
-      thumbnail: `output/thumbnails/${horoscope.sign}.png`,
-      title: `${capitalized} Horoscope - ${horoscope.date}`,
-      // tags: tag,
-      description: `Manifest Love & Money 2023: ${
-        process.env.AFFLIATE_LINK
-      } \n\nTags: (${tag.join(", ")})`,
-    };
-    video_datas.push(data);
-  }
+  const capitalized =
+    sign_horoscope.sign.charAt(0).toUpperCase() + sign_horoscope.sign.slice(1);
+  const data = {
+    path: `output/videos/${sign_horoscope.sign}.mp4`,
+    thumbnail: `output/thumbnails/${sign_horoscope.sign}.png`,
+    title: `${capitalized} Horoscope - ${sign_horoscope.date}`,
+    // tags: tag,
+    description: `Manifest Love & Money 2023: ${
+      process.env.AFFLIATE_LINK
+    } \n\nTags: (${tag.tags.join(", ")})`,
+  };
+  video_datas.push(data);
+
   const credentials: any = {
     email: process.env.YT_EMAIL,
     pass: "process.env.YT_PASSWORD",
