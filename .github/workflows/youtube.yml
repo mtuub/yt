@@ -45,6 +45,7 @@ jobs:
         sign: ["aries"]
     steps:
       - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
       - uses: actions/download-artifact@v3
       - run: npm run install-build
       - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
