@@ -3,15 +3,17 @@ on:
   push:
     branches: master
 
+env:
+  NUM_OF_WORKERS: 1
+
 jobs:
-  render-videos:
+  render-video:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        worker: [0]
-        # worker: [0, 1, 3, 4, 5, 6, 7, 8, 9, 10]
+        worker_id: $(for i in $(seq 1 ${{ env.NUM_OF_WORKERS }})); do echo $i; done)
     steps:
-      - run: echo ${{matrix.length}}
+      - run: echo ${{matrix.worker_id}}
         # - uses: actions/checkout@v2
         # - uses: FedericoCarboni/setup-ffmpeg@v2
 
