@@ -59,9 +59,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dawidd6/action-download-artifact@v2
-          with:
-            run_id: 4087287584
-  
+        with:
+          run_id: 4087287584
+
       - uses: actions/upload-artifact@v3
         with:
           name: output
