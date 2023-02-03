@@ -27,17 +27,6 @@ export const RemotionVideo = () => {
           horoscopeWithSubtitles,
         }}
       />
-      <Composition
-        id="Horoscope2"
-        component={HoroscopeComponent}
-        durationInFrames={30 * Math.round(video_duration + 3)}
-        fps={24}
-        height={1080}
-        width={1920}
-        defaultProps={{
-          horoscopeWithSubtitles,
-        }}
-      />
     </>
   );
 };
