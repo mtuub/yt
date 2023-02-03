@@ -53,13 +53,13 @@ jobs:
 
       - name: Set end frame
         run: |
-          if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
-            echo "end=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
+          if [ "$matrix.worker" -lt ${{env.NUM_OF_WORKERS}} - 1 ]; then
+            echo "END_FRAME=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
           else
-            echo "end=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
+            echo "END_FRAME=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
           fi
 
-      - run: echo ${{start}} ${{end}}
+      - run: echo ${{env.START_FRAME}} ${{env.END_FRAME}}
 
       # - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
 
