@@ -25,42 +25,41 @@ jobs:
       matrix:
         worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
-      - run: echo ${{ matrix.worker_id }}
-        # - uses: actions/checkout@v2
-        # - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
 
-        # - run: npm install remotion react react-dom @remotion/cli
+      - run: npm install remotion react react-dom @remotion/cli
 
-        # - name: Render audio & Get total frames
-        #   run: |
-        #     output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-10)
-        #     value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
-        #     echo "total_frames=$value" >> $GITHUB_ENV
+      - name: Render audio & Get total frames
+        run: |
+          output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-10)
+          value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
+          echo "TOTAL_FRAMES=$value" >> $GITHUB_ENV
 
-        # - name: Set frames per worker
-        #   run: |
-        #     framesPerWorker=$((${{env.total_frames}}/${{matrix.worker.length}}))
-        #     echo "frames_per_worker=$framesPerWorker" >> $GITHUB_ENV
+      - name: Set frames per worker
+        run: |
+          framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
+          echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
-        # - run: echo ${{env.total_frames}} ${{env.frames_per_worker}}
+      - run: echo ${{env.TOTAL_FRAMES}} ${{env.FRAMES_PER_WORKER}}
 
-        # - name: Set start frame
-        #   run: echo "start=$((${{matrix.worker}}*${{env.frames_per_worker}}))" >> $GITHUB_ENV
+      # - name: Set start frame
+      #   run: echo "start=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
 
-        # - name: Set end frame
-        #   run: |
-        #     if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
-        #       echo "end=$((${{matrix.worker}}*${{env.frames_per_worker}}+${{env.frames_per_worker}}-1))" >> $GITHUB_ENV
-        #     else
-        #       echo "end=${{env.total_frames}}" >> $GITHUB_ENV
-        #     fi
+      # - name: Set end frame
+      #   run: |
+      #     if [ "$matrix.worker" -lt ${{matrix.length}} - 1 ]; then
+      #       echo "end=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}+${{env.FRAMES_PER_WORKER}}-1))" >> $GITHUB_ENV
+      #     else
+      #       echo "end=${{env.TOTAL_FRAMES}}" >> $GITHUB_ENV
+      #     fi
 
-        # - run: echo ${{start}} ${{end}}
+      # - run: echo ${{start}} ${{end}}
 
-        # - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
+      # - run: npx remotion render remotion/src/index.tsx Horoscope output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
 
-        # - uses: actions/upload-artifact@v3
-        #   with:
-        #     name: output
-        #     path: ./output
-        #     retention-days: 1
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: output
+      #     path: ./output
+      #     retention-days: 1
