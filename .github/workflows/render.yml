@@ -14,27 +14,28 @@ jobs:
         run: |
           array=($(for i in $(seq 0 $((${{env.NUM_OF_WORKERS}}-1))); do echo "\"$i\""; done))
           array="["$(echo "${array[@]}" | tr ' ' ',')"]"
-          echo "workers_matrix=$array" >> $GITHUB_OUTPUT
-    outputs:
-      workers_matrix: ${{ steps.set-matrix.outputs.workers_matrix }}
+          echo "WORKERS_MATRIX=$array" >> $GITHUB_ENV
 
-  render-video:
+  render-audio:
     runs-on: ubuntu-latest
-    needs: build-matrix
-    strategy:
-      matrix:
-        worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: FedericoCarboni/setup-ffmpeg@v2
-
-      - run: npm install remotion react react-dom @remotion/cli
-
       - name: Render audio & Get total frames
         run: |
           output=$(npx remotion render remotion/src/index.tsx Horoscope output/audio.mp3 --frames=0-10)
           value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
           echo "TOTAL_FRAMES=$value" >> $GITHUB_ENV
+
+  render-video:
+    runs-on: ubuntu-latest
+    needs: [build-matrix, render-audio]
+    strategy:
+      matrix:
+        worker_id: ${{ fromJson(env.WORKERS_MATRIX) }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - run: npm install remotion react react-dom @remotion/cli
 
       - name: Set frames per worker
         run: |
