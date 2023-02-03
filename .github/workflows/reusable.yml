@@ -27,7 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: touch ${{env.OUTPUT_PATH}}
+      - run: echo 'OUT_DIR=$(dirname "${{env.OUTPUT_PATH}}")' >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: $(dirname "${{env.OUTPUT_PATH}}")
+          name: ${{env.OUT_DIR}}
           path: ${{env.OUTPUT_PATH}}
