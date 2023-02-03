@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: touch ${{env.OUTPUT_PATH}}
-      - run: echo "fsdfds" >> ${{env.OUTPUT_PATH}}
+      - run: echo "fsdfds" >> "${{env.OUTPUT_PATH}}"
       - uses: actions/upload-artifact@v3
         with:
           name: $(dirname "${{env.OUTPUT_PATH}}")
