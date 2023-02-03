@@ -34,8 +34,7 @@ jobs:
   render-video:
     runs-on: ubuntu-latest
     needs: [build-matrix, render-audio]
-    env:
-      TOTAL_FRAMES: ${{env.TOTAL_FRAMES}}
+
     # strategy:
     #   matrix:
     #     worker_id: ${{ fromJson(env.WORKERS_MATRIX) }}
