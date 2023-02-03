@@ -83,8 +83,6 @@ jobs:
   render-videos:
     needs: generate-subtitles-and-get-videos-urls
     strategy:
-      max-parallel: 1
-      fail-fast: false
       matrix:
         sign:
           [
@@ -101,17 +99,17 @@ jobs:
             "aquarius",
             "pisces",
           ]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/download-artifact@v3
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
 
-        - run: npm install remotion react react-dom @remotion/cli
-        - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
-        - uses: actions/upload-artifact@v3
-          with:
-            name: output
-            path: ./output
-            retention-days: 1
+      - run: npm install remotion react react-dom @remotion/cli
+      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+          retention-days: 1
     # uses: ./.github/workflows/render-matrix.yml
     # with:
     #   num_of_workers: 50
