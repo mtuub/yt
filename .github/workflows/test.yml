@@ -12,8 +12,7 @@ jobs:
       num_of_workers: 2
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
-      output_dir: output
-      sign: aries
+      output_path: output/videos/aries.txt
 
   check-artifact:
     runs-on: ubuntu-latest
@@ -21,4 +20,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
-      - run: cd output && ls
+      - run: cd output/videos && ls
