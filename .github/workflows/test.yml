@@ -9,4 +9,4 @@ jobs:
   call-workflow-in-local-repo:
     uses: ./.github/workflows/render.yml
     secrets:
-      num_of_workers: 2
+      NUM_OF_WORKERS: 2

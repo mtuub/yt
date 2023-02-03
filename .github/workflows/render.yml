@@ -5,7 +5,7 @@ on:
 env:
   REMOTION_ENTRY_POINT: remotion/src/index.tsx
   REMOTION_COMPOSITION_ID: Horoscope
-  NUM_OF_WORKERS: ${{secrets.num_of_workers}}
+  NUM_OF_WORKERS: ${{secrets.NUM_OF_WORKERS}}
 
 jobs:
   cache-dependencies:
