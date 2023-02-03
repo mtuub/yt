@@ -5,11 +5,21 @@ on:
       num_of_workers:
         required: true
         type: number
+      remotion_entry_point:
+        required: true
+        type: string
+      remotion_composition_id:
+        required: true
+        type: string
+      video_name:
+        required: true
+        type: string
 
 env:
-  REMOTION_ENTRY_POINT: remotion/src/index.tsx
-  REMOTION_COMPOSITION_ID: Horoscope
+  REMOTION_ENTRY_POINT: ${{inputs.remotion_entry_point}}
+  REMOTION_COMPOSITION_ID: ${{inputs.remotion_composition_id}}
   NUM_OF_WORKERS: ${{inputs.num_of_workers}}
+  VIDEO_NAME: ${{inputs.video_name}}
 
 jobs:
   cache-dependencies:
@@ -146,5 +156,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: video
+          name: ${{env.VIDEO_NAME}}
           path: video.mp4

@@ -7,6 +7,9 @@ on:
 
 jobs:
   call-workflow-in-local-repo:
-    uses: ./.github/workflows/render.yml
+    uses: ./.github/workflows/reusable.yml
     with:
       num_of_workers: 2
+      remotion_composition_id: Horoscope
+      remotion_entry_point: remotion/src/index.tsx
+      video_name: aries
