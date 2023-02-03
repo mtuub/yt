@@ -6,7 +6,7 @@ on:
 env:
   REMOTION_ENTRY_POINT: remotion/src/index.tsx
   REMOTION_COMPOSITION_ID: Horoscope
-  NUM_OF_WORKERS: 5
+  NUM_OF_WORKERS: 25
 
 jobs:
   build-matrix:
