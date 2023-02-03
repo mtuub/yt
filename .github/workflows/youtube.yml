@@ -68,18 +68,18 @@ jobs:
             path: ./output
             retention-days: 1
 
-  call-workflow-in-local-repo:
-    # needs: generate-subtitles-and-get-videos-urls
-    strategy:
-      matrix:
-        sign: ["aries"]
-    uses: ./.github/workflows/reusable.yml
-    with:
-      num_of_workers: 2
-      remotion_composition_id: Horoscope
-      remotion_entry_point: remotion/src/index.tsx
-      output_path: output/videos/${{matrix.sign}}.mp4
-      sign: ${{matrix.sign}}
+  # call-workflow-in-local-repo:
+  #   # needs: generate-subtitles-and-get-videos-urls
+  #   strategy:
+  #     matrix:
+  #       sign: ["aries"]
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     num_of_workers: 2
+  #     remotion_composition_id: Horoscope
+  #     remotion_entry_point: remotion/src/index.tsx
+  #     output_path: output/videos/${{matrix.sign}}.mp4
+  #     sign: ${{matrix.sign}}
 
   # upload-videos-yt:
   #   runs-on: ubuntu-latest
