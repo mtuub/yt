@@ -37,18 +37,19 @@ jobs:
   render-video:
     runs-on: ubuntu-latest
     needs: [build-matrix, render-audio]
-    env:
-      TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
-    strategy:
-      matrix:
-        worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
+    # env:
+    #   TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
+    # strategy:
+    #   matrix:
+    #     worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
-      - name: Set frames per worker
-        run: |
-          framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
-          echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
+      # - name: Set frames per worker
+      #   run: |
+      #     framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
+      #     echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
-      - run: echo ${{env.TOTAL_FRAMES}} ${{env.FRAMES_PER_WORKER}}
+      - run: echo ${{needs.build-matrix.outputs.workers_matrix}}
+      - run: echo ${{needs.render-audio.outputs.total_frames}}
 
       # - name: Set start frame
       #   run: echo "start=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
