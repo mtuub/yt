@@ -135,10 +135,10 @@ jobs:
       - uses: actions/download-artifact@v3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      - id: create list.txt with all mp4 files
+      - name: create text file with all mp4 files
         run: find workflow_output/ -name '*.mp4' | sort -V | xargs printf "file '%s'\n" > list.txt
 
-      - id: merge all mp4 and mp3 files
+      - name: merge all mp4 and mp3 files
         run: ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy video.mp4
 
       - uses: actions/upload-artifact@v3
