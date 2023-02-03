@@ -30,4 +30,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: $(dirname "${{env.OUTPUT_PATH}}")
-          path: $(dirname "${{env.OUTPUT_PATH}}")
+          path: ${{env.OUTPUT_PATH}}
