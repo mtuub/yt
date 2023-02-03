@@ -14,7 +14,7 @@ jobs:
         run: |
           array=($(for i in $(seq 1 3); do echo "\"$i\""; done))
           array="["$(echo "${array[@]}" | tr ' ' ',')"]"
-          echo $array
+          echo ${{fromJSON($array)}}
     outputs:
       version_matrix: ${{ steps.set-matrix.outputs.version_matrix }}
 
