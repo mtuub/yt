@@ -42,21 +42,7 @@ jobs:
     needs: generate-tts
     strategy:
       matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
+        sign: ["aries"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
