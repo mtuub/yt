@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm i remotion react react-dom @remotion/cli
+        run: npm ci && npm i remotion react react-dom @remotion/cli
 
   build-matrix:
     runs-on: ubuntu-latest
