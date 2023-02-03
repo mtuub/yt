@@ -77,7 +77,7 @@ jobs:
       # - run: echo ${{env.START_FRAME}} ${{env.END_FRAME}}
 
       - name: Render muted video
-      - run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
+        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker}}.mp4 --frames=${{env.start}}-${{env.end}} --muted
 
       - uses: actions/upload-artifact@v3
         with:
