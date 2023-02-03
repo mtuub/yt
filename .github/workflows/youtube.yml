@@ -86,14 +86,14 @@ jobs:
     strategy:
       matrix:
         sign: ["aries"]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/download-artifact@v3
-        - run: npm run install-build
-        - run: node build/server/generate_thumbnail.js ${{matrix.sign}}
-        - run: node build/server/generate_tags.js ${{matrix.sign}}
-        - run: node build/server/upload_yt.js ${{matrix.sign}}
-        # - uses: kolpav/purge-artifacts-action@v1
-        #   with:
-        #     token: ${{ secrets.GITHUB_TOKEN }}
-        #     expire-in: 0days # Setting this to 0 will delete all artifacts
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_thumbnail.js ${{matrix.sign}}
+      - run: node build/server/generate_tags.js ${{matrix.sign}}
+      - run: node build/server/upload_yt.js ${{matrix.sign}}
+      # - uses: kolpav/purge-artifacts-action@v1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     expire-in: 0days # Setting this to 0 will delete all artifacts
