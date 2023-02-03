@@ -32,13 +32,13 @@ jobs:
           value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
           echo "total_frames=$value" >> $GITHUB_OUTPUT
     outputs:
-      total_frames: ${{ steps.set-matrix.outputs.total_frames }}
+      total_frames: ${{ steps.render-audio.outputs.total_frames }}
 
   render-video:
     runs-on: ubuntu-latest
     needs: [build-matrix, render-audio]
-    # env:
-    #   TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
+    env:
+      TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
     # strategy:
     #   matrix:
     #     worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
@@ -49,7 +49,7 @@ jobs:
       #     echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
       - run: echo ${{needs.build-matrix.outputs.workers_matrix}}
-      - run: echo ${{needs.render-audio.outputs.total_frames}}
+      - run: echo ${{needs.render-audio.outputs.total_frames}} ${{env.TOTAL_FRAMES}}
 
       # - name: Set start frame
       #   run: echo "start=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
