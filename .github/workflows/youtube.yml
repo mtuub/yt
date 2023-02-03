@@ -75,7 +75,7 @@ jobs:
         sign: ["aries"]
     uses: ./.github/workflows/render-matrix.yml
     with:
-      num_of_workers: 2
+      num_of_workers: 10
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
       output_path: output/videos/${{matrix.sign}}.mp4
