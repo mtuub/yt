@@ -37,6 +37,35 @@ jobs:
     outputs:
       workers_matrix: ${{ steps.set-matrix.outputs.workers_matrix }}
 
+  retrieve-total-frames:
+    runs-on: ubuntu-latest
+    needs: [cache-dependencies]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - id: get-total-frames
+        run: |
+          output=$(npx remotion compositions ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}}) 
+          value=$(echo "$output" | awk -v name="$name" '$1==name {print $4}' | tail -n 1)
+          echo "total_frames=$value" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: workflow_output
+          path: ./workflow_output
+          retention-days: 1
+    outputs:
+      total_frames: ${{ steps.get-total-frames.outputs.total_frames }}
+
   render-audio:
     runs-on: ubuntu-latest
     needs: [cache-dependencies]
@@ -53,24 +82,19 @@ jobs:
             ${{ runner.os }}-node-
 
       - id: render-audio
-        run: |
-          output=$(npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3) 
-          value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
-          echo "total_frames=$value" >> $GITHUB_OUTPUT
+        run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3
 
       - uses: actions/upload-artifact@v3
         with:
           name: workflow_output
           path: ./workflow_output
           retention-days: 1
-    outputs:
-      total_frames: ${{ steps.render-audio.outputs.total_frames }}
 
   render-video:
     runs-on: ubuntu-latest
-    needs: [build-matrix, render-audio]
+    needs: [build-matrix, cache-dependencies, retrieve-total-frames]
     env:
-      TOTAL_FRAMES: ${{needs.render-audio.outputs.total_frames}}
+      TOTAL_FRAMES: ${{needs.retrieve-total-frames.outputs.total_frames}}
     strategy:
       matrix:
         worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
