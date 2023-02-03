@@ -7,4 +7,4 @@ on:
 
 jobs:
   call-workflow-in-local-repo:
-    - uses: ./.github/workflows/render.yml
+    uses: ./.github/workflows/render.yml
