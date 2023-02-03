@@ -15,11 +15,14 @@ export const HoroscopeComponent = (props) => {
       horoscope_with_subtitles_and_images.subtitles.length - 1
     ].to;
   return (
-    <AbsoluteFill>
-      <Audio src={require(`../../audio.mp3`)} />
-      {/* <Audio
+    <AbsoluteFill
+      style={{
+        backgroundColor: "rgba(0,0,0,0.8)",
+      }}
+    >
+      <Audio
         src={require(`../../output/audios/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
-      /> */}
+      />
 
       <Series>
         {horoscope_with_subtitles_and_images.subtitles.map((subtitle, sIdx) => {
@@ -99,28 +102,32 @@ export const HoroscopeComponent = (props) => {
         })}
 
         <Series.Sequence
-          from={Math.floor(
-            (horoscope_with_subtitles_and_images.subtitles[
+          from={Math.ceil(
+            horoscope_with_subtitles_and_images.subtitles[
               horoscope_with_subtitles_and_images.subtitles.length - 1
-            ].to +
-              0.5) *
-              videoConfig.fps
+            ].to * videoConfig.fps
           )}
           durationInFrames={3 * videoConfig.fps}
         >
           <AbsoluteFill
             style={{
-              top: "15%",
               textAlign: "center",
+              background: "rgba(0,0,0,0.8)",
             }}
           >
-            <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
-              Manifest Your Dream Life
-            </h1>
-            <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
-              Attract Money, Love & Success
-            </h1>
-            <h1 style={{ color: "#FFF", fontSize: "100px" }}>Link in Bio</h1>
+            <AbsoluteFill
+              style={{
+                top: "15%",
+              }}
+            >
+              <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
+                Manifest Your Dream Life
+              </h1>
+              <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
+                Attract Money, Love & Success
+              </h1>
+              <h1 style={{ color: "#FFF", fontSize: "100px" }}>Link in Bio</h1>
+            </AbsoluteFill>
           </AbsoluteFill>
         </Series.Sequence>
       </Series>

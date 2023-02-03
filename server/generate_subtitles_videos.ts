@@ -19,7 +19,15 @@ import { getVideoSuggestion } from "./services/video_search";
   // Get video suggestions
   for (let idx = 0; idx < subtitles.length; idx++) {
     const subtitle = subtitles[idx];
-    const video_url = await getVideoSuggestion(subtitle.sentence);
+
+    let sentence = subtitle.sentence.toLowerCase();
+
+    sentence = sentence.replace("Regarding career, ", "");
+    sentence = sentence.replace("Regarding health, ", "");
+    sentence = sentence.replace("Regarding love, ", "");
+    sentence = sentence.replace(sign, "");
+
+    const video_url = await getVideoSuggestion(sentence);
     subtitle.video_url = video_url;
     console.log(`Video retrieved: ${idx} / ${subtitles.length} done.`);
   }

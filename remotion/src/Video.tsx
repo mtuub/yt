@@ -4,10 +4,9 @@ import { HoroscopeComponent } from "./Horoscope";
 import "./style.css";
 
 export const RemotionVideo = () => {
-  // const { sign } = getInputProps();
+  const { sign } = getInputProps();
   // const sign = "aries";
-  // const horoscopeWithSubtitles = require(`../../output/subtitles/${sign}.json`);
-  const horoscopeWithSubtitles = require(`../../aries.json`);
+  const horoscopeWithSubtitles = require(`../../output/subtitles/${sign}.json`);
 
   const video_duration: any =
     horoscopeWithSubtitles?.subtitles[
