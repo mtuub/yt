@@ -161,8 +161,8 @@ jobs:
 
       - name: merge all mp4 and mp3 files
         run: |
-        mkdir -p $(dirname ${{env.OUTPUT_PATH}})
-        ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy ${{env.OUTPUT_PATH}}
+          mkdir -p $(dirname ${{env.OUTPUT_PATH}})
+          ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy ${{env.OUTPUT_PATH}}
 
       - uses: actions/upload-artifact@v3
         with:
