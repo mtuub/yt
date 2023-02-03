@@ -82,6 +82,7 @@ jobs:
 
   render-videos:
     needs: generate-subtitles-and-get-videos-urls
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         sign:
