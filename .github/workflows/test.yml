@@ -8,5 +8,5 @@ on:
 jobs:
   call-workflow-in-local-repo:
     uses: ./.github/workflows/render.yml
-    secrets:
-      NUM_OF_WORKERS: 2
+    with:
+      num_of_workers: 2
