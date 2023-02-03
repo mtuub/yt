@@ -84,6 +84,7 @@ jobs:
     needs: generate-subtitles-and-get-videos-urls
     strategy:
       max-parallel: 2
+      fail-fast: false
       matrix:
         sign:
           [
@@ -102,7 +103,7 @@ jobs:
           ]
     uses: ./.github/workflows/render-matrix.yml
     with:
-      num_of_workers: 15
+      num_of_workers: 10
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
       output_path: output/videos/${{matrix.sign}}.mp4
