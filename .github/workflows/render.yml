@@ -28,21 +28,22 @@ jobs:
   render-video:
     runs-on: ubuntu-latest
     needs: [build-matrix, render-audio]
-    strategy:
-      matrix:
-        worker_id: ${{ fromJson(env.WORKERS_MATRIX) }}
+    # strategy:
+    #   matrix:
+    #     worker_id: ${{ fromJson(env.WORKERS_MATRIX) }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+      - run: echo ${{env.TOTAL_FRAMES}}
+      # - uses: actions/checkout@v2
+      # - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      - run: npm install remotion react react-dom @remotion/cli
+      # - run: npm install remotion react react-dom @remotion/cli
 
-      - name: Set frames per worker
-        run: |
-          framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
-          echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
+      # - name: Set frames per worker
+      #   run: |
+      #     framesPerWorker=$((${{env.TOTAL_FRAMES}}/${{env.NUM_OF_WORKERS}}))
+      #     echo "FRAMES_PER_WORKER=$framesPerWorker" >> $GITHUB_ENV
 
-      - run: echo ${{env.TOTAL_FRAMES}} ${{env.FRAMES_PER_WORKER}}
+      # - run: echo ${{env.TOTAL_FRAMES}} ${{env.FRAMES_PER_WORKER}}
 
       # - name: Set start frame
       #   run: echo "start=$((${{matrix.worker}}*${{env.FRAMES_PER_WORKER}}))" >> $GITHUB_ENV
