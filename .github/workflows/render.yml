@@ -1,7 +1,6 @@
-name: Create youtube video
+name: Render video matrix
 on:
-  push:
-    branches: master
+  workflow_call:
 
 env:
   REMOTION_ENTRY_POINT: remotion/src/index.tsx
