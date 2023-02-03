@@ -29,10 +29,9 @@ jobs:
       - run: npm install remotion react react-dom @remotion/cli #TODO:cache
 
       - id: render-audio
-        #TODO: rm --frames
         run: |
           mkdir workflow_output
-          output=$(npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3 --frames=0-10) 
+          output=$(npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3) 
           value=$(echo "$output" | grep -oE '[0-9]+/[0-9]+' | awk -F '/' '{if ($1 == $2 && $1 > 3) print $1}' | tail -n 1)
           echo "total_frames=$value" >> $GITHUB_OUTPUT
 
