@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        worker_id: ${{ range(1, 5) }}
+        worker_id: ${{ fromJSON("[1,2]")}}
     steps:
       - run: echo ${{matrix.worker_id}}
         # - uses: actions/checkout@v2
