@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        worker_id: $(for i in $(seq 1 ${{ env.NUM_OF_WORKERS }})); do echo $i; done)
+        worker_id: $($(for i in $(seq 1 5); do echo $i; done)); echo "[$(echo -n "${array[@]}" | sed ')
+
     steps:
       - run: echo ${{matrix.worker_id}}
         # - uses: actions/checkout@v2
