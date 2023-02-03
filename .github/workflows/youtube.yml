@@ -101,13 +101,24 @@ jobs:
             "aquarius",
             "pisces",
           ]
-    uses: ./.github/workflows/render-matrix.yml
-    with:
-      num_of_workers: 50
-      remotion_composition_id: Horoscope
-      remotion_entry_point: remotion/src/index.tsx
-      output_path: output/videos/${{matrix.sign}}.mp4
-      sign: ${{matrix.sign}}
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/download-artifact@v3
+
+        - run: npm install remotion react react-dom @remotion/cli
+        - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
+        - uses: actions/upload-artifact@v3
+          with:
+            name: output
+            path: ./output
+            retention-days: 1
+    # uses: ./.github/workflows/render-matrix.yml
+    # with:
+    #   num_of_workers: 50
+    #   remotion_composition_id: Horoscope
+    #   remotion_entry_point: remotion/src/index.tsx
+    #   output_path: output/videos/${{matrix.sign}}.mp4
+    #   sign: ${{matrix.sign}}
 
   upload-videos-yt:
     runs-on: ubuntu-latest
