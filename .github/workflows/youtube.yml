@@ -103,6 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
+      - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - run: npm install remotion react react-dom @remotion/cli
       - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"

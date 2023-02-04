@@ -79,3 +79,12 @@ export async function getFileSize(filePath): Promise<number> {
 export function getUserAgent(): string {
   return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 }
+
+export async function checkIfFileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.stat(filePath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

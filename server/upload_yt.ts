@@ -2,17 +2,14 @@ import fs from "fs/promises";
 import { getYTCookies } from "./services/horoscope";
 import { Horoscope, Tag } from "./types";
 const glob = require("glob");
-import { upload } from "youtube-videos-uploader";
+import { upload, comment } from "youtube-videos-uploader";
 require("dotenv").config();
 
 (async () => {
-  const sign = process.argv[2].toLowerCase();
-
   const horoscopes: Horoscope[] = JSON.parse(
     await fs.readFile("output/horoscope.json", "utf-8")
   );
 
-  const sign_horoscope = horoscopes.find((h) => h.sign === sign);
   //   retrieve yt cookies from api
   try {
     await fs.mkdir(`yt-auth`, { recursive: true });
@@ -25,23 +22,33 @@ require("dotenv").config();
   )}.json`;
   await fs.writeFile(`yt-auth/${cookiesName}`, JSON.stringify(cookies));
 
-  const tag: Tag = JSON.parse(
-    await fs.readFile(`output/tags/${sign}.json`, "utf-8")
-  );
   const video_datas = [];
 
-  const capitalized =
-    sign_horoscope.sign.charAt(0).toUpperCase() + sign_horoscope.sign.slice(1);
-  const data = {
-    path: `output/videos/${sign_horoscope.sign}.mp4`,
-    thumbnail: `output/thumbnails/${sign_horoscope.sign}.png`,
-    title: `${capitalized} Horoscope - ${sign_horoscope.date}`,
-    // tags: tag,
-    description: `Manifest Love & Money 2023: ${
-      process.env.AFFLIATE_LINK
-    } \n\nTags: (${tag.tags.join(", ")})`,
-  };
-  video_datas.push(data);
+  for (let idx = 0; idx < horoscopes.length; idx++) {
+    try {
+      const horoscope = horoscopes[idx];
+
+      const tag: Tag = JSON.parse(
+        await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
+      );
+
+      const capitalized =
+        horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
+      const data = {
+        path: `output/videos/${horoscope.sign}.mp4`,
+        thumbnail: `output/thumbnails/${horoscope.sign}.png`,
+        title: `${capitalized} Horoscope - ${horoscope.date}`,
+        // tags: tag,
+        description: `Manifest Love & Money 2023: ${
+          process.env.AFFLIATE_LINK
+        } \n\nTags: (${tag.tags.join(", ")})`,
+        isNotForKid: true,
+      };
+      video_datas.push(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   const credentials: any = {
     email: process.env.YT_EMAIL,
@@ -56,7 +63,17 @@ require("dotenv").config();
       upload(credentials, video_datas, {
         executablePath: file_path[0],
         // headless: false,
-      }).then();
+      }).then((urls) => {
+        const comments = urls.map((url) => {
+          return {
+            link: url,
+            comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
+            pin: true,
+          };
+        });
+
+        comment(credentials, [...comments]).then();
+      });
     }
   );
 })();

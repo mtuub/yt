@@ -22,9 +22,9 @@ import { getVideoSuggestion } from "./services/video_search";
 
     let sentence = subtitle.sentence.toLowerCase();
 
-    sentence = sentence.replace("Regarding career, ", "");
-    sentence = sentence.replace("Regarding health, ", "");
-    sentence = sentence.replace("Regarding love, ", "");
+    sentence = sentence.replace("regarding career, ", "");
+    sentence = sentence.replace("regarding health, ", "");
+    sentence = sentence.replace("regarding love, ", "");
     sentence = sentence.replace(sign, "");
 
     const video_url = await getVideoSuggestion(sentence);
