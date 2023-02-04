@@ -27,7 +27,12 @@ import { getVideoSuggestion } from "./services/video_search";
     sentence = sentence.replace("regarding love, ", "");
     sentence = sentence.replace(sign, "");
 
-    const video_url = await getVideoSuggestion(sentence);
+    let video_url;
+    try {
+      video_url = await getVideoSuggestion(sentence);
+    } catch (error) {
+      video_url = await getVideoSuggestion(sign);
+    }
     subtitle.video_url = video_url;
     console.log(`Video retrieved: ${idx} / ${subtitles.length} done.`);
   }
