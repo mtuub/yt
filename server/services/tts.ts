@@ -1,6 +1,6 @@
 import axios from "axios";
 import fs from "fs/promises";
-import { getUserAgent } from "../utils";
+import { getUserAgent, sleep } from "../utils";
 
 async function convertTTS(text: string, save_path: string): Promise<void> {
   const data = {
@@ -16,11 +16,20 @@ async function convertTTS(text: string, save_path: string): Promise<void> {
     data,
     { headers }
   );
-  const audio = await axios.get(response.data.data.synthesisResult.audioURL, {
-    headers,
-    responseType: "arraybuffer",
-  });
-  await fs.writeFile(save_path, audio.data);
+  try {
+    const audio = await axios.get(response.data.data.synthesisResult.audioURL, {
+      headers,
+      responseType: "arraybuffer",
+    });
+    await fs.writeFile(save_path, audio.data);
+  } catch (error) {
+    await sleep(5000);
+    const audio = await axios.get(response.data.data.synthesisResult.audioURL, {
+      headers,
+      responseType: "arraybuffer",
+    });
+    await fs.writeFile(save_path, audio.data);
+  }
 }
 
 export default convertTTS;
