@@ -7,19 +7,21 @@ import { checkIfFileExists } from "./utils";
   const width = 1280;
   const height = 720;
 
+  const sign = process.argv[2].toLowerCase();
+
   const horoscopes: Horoscope[] = JSON.parse(
     await fs.readFile("output/horoscope.json", "utf-8")
   );
+  const sign_horoscope = horoscopes.find((h) => h.sign === sign);
 
-  for (let idx = 0; idx < horoscopes.length; idx++) {
-    const horoscope = horoscopes[idx];
-    const save_dir = "output/thumbnails";
-    try {
-      await fs.mkdir(save_dir, { recursive: true });
-    } catch (error) {}
+  const horoscope = sign_horoscope;
+  const save_dir = "output/thumbnails";
+  try {
+    await fs.mkdir(save_dir, { recursive: true });
+  } catch (error) {}
 
-    const date_arr = horoscope.date.split(" ");
-    const svgImage = `
+  const date_arr = horoscope.date.split(" ");
+  const svgImage = `
           <svg width="${width}" height="${height}" fill="#000">
             <style>
             svg {color: black}
@@ -32,18 +34,17 @@ import { checkIfFileExists } from "./utils";
             <text x="4%" y="89%" class="sign">${horoscope.sign.toUpperCase()}</text>
           </svg>
           `;
-    const svgBuffer = Buffer.from(svgImage);
+  const svgBuffer = Buffer.from(svgImage);
 
-    const base_img = `assets/${horoscope.sign}.png`;
+  const base_img = `assets/${horoscope.sign}.png`;
 
-    if (await checkIfFileExists(base_img)) {
-      await sharp(base_img)
-        .composite([{ input: svgBuffer }])
-        .toFile(`${save_dir}/${horoscope.sign}.png`);
-    } else {
-      await sharp("assets/default.png")
-        .composite([{ input: svgBuffer }])
-        .toFile(`${save_dir}/${horoscope.sign}.png`);
-    }
+  if (await checkIfFileExists(base_img)) {
+    await sharp(base_img)
+      .composite([{ input: svgBuffer }])
+      .toFile(`${save_dir}/${horoscope.sign}.png`);
+  } else {
+    await sharp("assets/default.png")
+      .composite([{ input: svgBuffer }])
+      .toFile(`${save_dir}/${horoscope.sign}.png`);
   }
 })();

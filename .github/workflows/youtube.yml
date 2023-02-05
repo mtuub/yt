@@ -97,55 +97,55 @@ jobs:
   #         name: output
   #         path: ./output
 
-  generate-subtitles-and-get-videos-urls:
+  render-videos:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: dawidd6/action-download-artifact@v2
         with:
-          run_id: 4098221643
+          run_id: 4098480733
 
       - uses: actions/upload-artifact@v3
         with:
           name: output
           path: ./output
 
-  render-videos:
-    needs: generate-subtitles-and-get-videos-urls
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+  # render-videos:
+  #   needs: generate-subtitles-and-get-videos-urls
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #     - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"  --muted
-      - run: |
-          mkdir output/videos
-          ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
+  #     - run: npm install remotion react react-dom @remotion/cli
+  #     - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"  --muted
+  #     - run: |
+  #         mkdir output/videos
+  #         ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
   # call-workflow-in-local-repo:
   #   needs: generate-subtitles-and-get-videos-urls
   #   strategy:
@@ -176,6 +176,24 @@ jobs:
   upload-videos-yt:
     runs-on: ubuntu-latest
     needs: render-videos
+    strategy:
+      max-parallel: 1
+      matrix:
+        sign:
+          [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces",
+          ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
@@ -187,9 +205,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm run build
-      - run: node build/server/generate_thumbnails.js
-      - run: node build/server/generate_tags.js
-      - run: node build/server/upload_yt.js
+      - run: node build/server/generate_thumbnails.js ${{matrix.sign}}
+      - run: node build/server/generate_tags.js ${{matrix.sign}}
+      - run: node build/server/upload_yt.js ${{matrix.sign}}
 
   delete-artifacts:
     runs-on: ubuntu-latest
