@@ -104,9 +104,41 @@ jobs:
           name: output
           path: ./output
 
-  render-videos:
+  # render-videos:
+  #   needs: generate-subtitles-and-get-videos-urls
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/download-artifact@v3
+  #   - uses: FedericoCarboni/setup-ffmpeg@v2
+
+  #   - run: npm install remotion react react-dom @remotion/cli
+  #   - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}  --muted"
+  #   - run: ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
+  #   - uses: actions/upload-artifact@v3
+  #     with:
+  #       name: output
+  #       path: ./output
+  #       retention-days: 1
+  call-workflow-in-local-repo:
     needs: generate-subtitles-and-get-videos-urls
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         sign:
@@ -124,30 +156,17 @@ jobs:
             "aquarius",
             "pisces",
           ]
-    steps:
-      #   - uses: actions/checkout@v3
-      #   - uses: actions/download-artifact@v3
-      #   - uses: FedericoCarboni/setup-ffmpeg@v2
-
-      #   - run: npm install remotion react react-dom @remotion/cli
-      #   - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}  --muted"
-      #   - run: ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
-      #   - uses: actions/upload-artifact@v3
-      #     with:
-      #       name: output
-      #       path: ./output
-      #       retention-days: 1
-      uses: ./.github/workflows/render-matrix.yml
-      with:
-        num_of_workers: 2
-        remotion_composition_id: Horoscope
-        remotion_entry_point: remotion/src/index.tsx
-        output_path: output/videos/${{matrix.sign}}.mp4
-        sign: ${{matrix.sign}}
+    uses: ./.github/workflows/render-matrix.yml
+    with:
+      num_of_workers: 2
+      remotion_composition_id: Horoscope
+      remotion_entry_point: remotion/src/index.tsx
+      output_path: output/videos/${{matrix.sign}}.mp4
+      sign: ${{matrix.sign}}
 
   upload-videos-yt:
     runs-on: ubuntu-latest
-    needs: render-videos
+    needs: call-workflow-in-local-repo:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
