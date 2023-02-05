@@ -69,7 +69,7 @@ jobs:
 
   generate-subtitles-and-get-videos-urls:
     runs-on: ubuntu-latest
-    needs: generate-tts
+    # needs: generate-tts
     strategy:
       matrix:
         sign:
