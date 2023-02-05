@@ -10,118 +10,119 @@ on:
     branches: master
 
 jobs:
-  scrape-horoscopes:
-    name: Scrape Horsocope
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@main
-      - run: npm run install-build
-      - run: node build/server/scrape_horoscopes.js
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  # scrape-horoscopes:
+  #   name: Scrape Horsocope
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@main
+  #     - run: npm run install-build
+  #     - run: node build/server/scrape_horoscopes.js
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  generate-tts:
-    runs-on: ubuntu-latest
-    needs: scrape-horoscopes
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_tts.js
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  # generate-tts:
+  #   runs-on: ubuntu-latest
+  #   needs: scrape-horoscopes
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_tts.js
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  generate-subtitles-and-get-videos-urls:
-    runs-on: ubuntu-latest
-    needs: generate-tts
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
+  # generate-subtitles-and-get-videos-urls:
+  #   runs-on: ubuntu-latest
+  #   needs: generate-tts
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
+  #         retention-days: 1
 
-  render-videos:
-    needs: generate-subtitles-and-get-videos-urls
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+  # render-videos:
+  #   needs: generate-subtitles-and-get-videos-urls
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       sign:
+  #         [
+  #           "aries",
+  #           "taurus",
+  #           "gemini",
+  #           "cancer",
+  #           "leo",
+  #           "virgo",
+  #           "libra",
+  #           "scorpio",
+  #           "sagittarius",
+  #           "capricorn",
+  #           "aquarius",
+  #           "pisces",
+  #         ]
+  #   # steps:
+  #   #   - uses: actions/checkout@v3
+  #   #   - uses: actions/download-artifact@v3
+  #   #   - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"
-      - uses: actions/upload-artifact@v3
-        with:
-          name: output
-          path: ./output
-          retention-days: 1
-    # uses: ./.github/workflows/render-matrix.yml
-    # with:
-    #   num_of_workers: 50
-    #   remotion_composition_id: Horoscope
-    #   remotion_entry_point: remotion/src/index.tsx
-    #   output_path: output/videos/${{matrix.sign}}.mp4
-    #   sign: ${{matrix.sign}}
+  #   #   - run: npm install remotion react react-dom @remotion/cli
+  #   #   - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}  --muted"
+  #   #   - run: ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
+  #   #   - uses: actions/upload-artifact@v3
+  #   #     with:
+  #   #       name: output
+  #   #       path: ./output
+  #   #       retention-days: 1
+  #   uses: ./.github/workflows/render-matrix.yml
+  #   with:
+  #     num_of_workers: 2
+  #     remotion_composition_id: Horoscope
+  #     remotion_entry_point: remotion/src/index.tsx
+  #     output_path: output/videos/${{matrix.sign}}.mp4
+  #     sign: ${{matrix.sign}}
 
-  upload-videos-yt:
-    runs-on: ubuntu-latest
-    needs: render-videos
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-      - run: npm run install-build
-      - run: node build/server/generate_thumbnails.js
-      - run: node build/server/generate_tags.js
-      - run: node build/server/upload_yt.js
+  # upload-videos-yt:
+  #   runs-on: ubuntu-latest
+  #   needs: render-videos
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #     - run: npm run install-build
+  #     - run: node build/server/generate_thumbnails.js
+  #     - run: node build/server/generate_tags.js
+  #     - run: node build/server/upload_yt.js
 
   delete-artifacts:
     runs-on: ubuntu-latest
-    needs: upload-videos-yt
+    # needs: upload-videos-yt
     steps:
       - uses: kolpav/purge-artifacts-action@v1
         with:
