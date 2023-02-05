@@ -55,25 +55,37 @@ require("dotenv").config();
     pass: "process.env.YT_PASSWORD",
   };
 
-  // Upload video
-  glob(
-    // "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
-    "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
-    function (er, file_path) {
-      upload(credentials, video_datas, {
-        executablePath: file_path[0],
-        // headless: false,
-      }).then((urls) => {
-        const comments = urls.map((url) => {
-          return {
-            link: url,
-            comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
-            pin: true,
-          };
-        });
+  for (let idx = 0; idx < video_datas.length; idx++) {
+    try {
+      const video_data = video_datas[idx];
+      // Upload video
+      glob(
+        // "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
+        "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
+        function (er, file_path) {
+          upload(credentials, [...video_data], {
+            executablePath: file_path[0],
+          }).then((urls) => {
+            console.log(`Uploaded video for ${video_data.title}`);
+            // comment after 1 minute
+            setTimeout(() => {
+              const comments = [
+                {
+                  link: urls[0],
+                  comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
+                  pin: true,
+                },
+              ];
 
-        comment(credentials, [...comments]).then();
-      });
+              comment(credentials, [...comments]).then((_) =>
+                console.log(`Commented on video for ${video_data.title}`)
+              );
+            }, 60000);
+          });
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
     }
-  );
+  }
 })();
