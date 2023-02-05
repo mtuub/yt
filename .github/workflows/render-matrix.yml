@@ -106,8 +106,9 @@ jobs:
       - id: render-audio
         run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/audio.mp3 --props="{\"sign\":\"${{env.SIGN}}\"}"
 
+      - uses: Wandalen/wretry.action@master
         with:
-          action: actions/download-artifact@v3
+          action: actions/upload-artifact@v3
           attempt_limit: 5
           attempt_delay: 2000
           name: workflow_output
@@ -157,8 +158,9 @@ jobs:
       - name: Render muted video
         run: npx remotion render ${{env.REMOTION_ENTRY_POINT}} ${{env.REMOTION_COMPOSITION_ID}} workflow_output/${{matrix.worker_id}}.mp4 --frames=${{env.START_FRAME}}-${{env.END_FRAME}} --muted --props="{\"sign\":\"${{env.SIGN}}\"}"
 
+      - uses: Wandalen/wretry.action@master
         with:
-          action: actions/download-artifact@v3
+          action: actions/upload-artifact@v3
           attempt_limit: 5
           attempt_delay: 2000
           name: workflow_output
@@ -184,8 +186,9 @@ jobs:
           mkdir -p $(dirname ${{env.OUTPUT_PATH}})
           ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy ${{env.OUTPUT_PATH}}
 
+      - uses: Wandalen/wretry.action@master
         with:
-          action: actions/download-artifact@v3
+          action: actions/upload-artifact@v3
           attempt_limit: 5
           attempt_delay: 2000
           name: output
