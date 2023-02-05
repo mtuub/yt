@@ -136,7 +136,7 @@ jobs:
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - run: npm install remotion react react-dom @remotion/cli
-      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}  --muted"
+      - run: npx remotion render remotion/src/index.tsx  Horoscope output/videos_muted/${{matrix.sign}}.mp4 --props="{\"sign\":\"${{matrix.sign}}\"}"  --muted
       - run: ffmpeg -i output/videos_muted/${{matrix.sign}}.mp4 -i output/audios/${{matrix.sign}}.mp3 -c copy output/videos/${{matrix.sign}}.mp4
       - uses: actions/upload-artifact@v3
         with:
