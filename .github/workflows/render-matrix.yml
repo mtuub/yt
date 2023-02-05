@@ -60,6 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
+        retry: 3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -84,6 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
+        retry: 3
 
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
@@ -114,6 +116,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
+        retry: 3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -154,6 +157,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
+        retry: 3
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: create text file with all mp4 files
