@@ -23,7 +23,8 @@ async function convertTTS(text: string, save_path: string): Promise<void> {
     });
     await fs.writeFile(save_path, audio.data);
   } catch (error) {
-    await sleep(5000);
+    console.log(`Audio not ready, waiting 15 seconds...`);
+    await sleep(15000);
     const audio = await axios.get(response.data.data.synthesisResult.audioURL, {
       headers,
       responseType: "arraybuffer",
