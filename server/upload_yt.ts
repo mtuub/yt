@@ -54,8 +54,8 @@ require("dotenv").config();
   const video_data = video_datas[0];
   // Upload video
   glob(
-    // "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
-    "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
+    "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
+    // "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
     function (er, file_path) {
       upload(credentials, [...video_data], {
         executablePath: file_path[0],

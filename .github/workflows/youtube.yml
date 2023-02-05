@@ -174,7 +174,7 @@ jobs:
   #     sign: ${{matrix.sign}}
 
   upload-videos-yt:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-windows
     # needs: render-videos
     strategy:
       max-parallel: 1
