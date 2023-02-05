@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "build": "npx tsc -p .",
+        "build": "tsc -p .",
         "install-build": "npm install && npm run build",
         "dev-video": "remotion preview remotion/src/index.tsx --port 3003",
         "still": "remotion render still remotion/src/index.tsx Horoscope out.jpg"

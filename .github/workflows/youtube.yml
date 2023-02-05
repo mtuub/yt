@@ -200,14 +200,8 @@ jobs:
       - uses: dawidd6/action-download-artifact@v2
         with:
           run_id: 4098480733
-      - name: Restore node modules cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - run: npm run build
+
+      - run: npm run install-build
       - run: node build/server/generate_thumbnails.js ${{matrix.sign}}
       - run: node build/server/generate_tags.js ${{matrix.sign}}
       - run: node build/server/upload_yt.js ${{matrix.sign}}
