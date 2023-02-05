@@ -59,8 +59,11 @@ jobs:
     needs: [cache-dependencies]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        retry: 3
+      - uses: Wandalen/wretry.action@master
+        with:
+          action: action/download-artifact@v3
+          attempt_limit: 3
+          attempt_delay: 2000
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -84,8 +87,11 @@ jobs:
     needs: [cache-dependencies]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        retry: 3
+      - uses: Wandalen/wretry.action@master
+        with:
+          action: action/download-artifact@v3
+          attempt_limit: 3
+          attempt_delay: 2000
 
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
@@ -115,8 +121,11 @@ jobs:
         worker_id: ${{ fromJson(needs.build-matrix.outputs.workers_matrix) }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        retry: 3
+      - uses: Wandalen/wretry.action@master
+        with:
+          action: action/download-artifact@v3
+          attempt_limit: 3
+          attempt_delay: 2000
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: Restore node modules cache
@@ -156,8 +165,11 @@ jobs:
     needs: [render-videos]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        retry: 3
+      - uses: Wandalen/wretry.action@master
+        with:
+          action: action/download-artifact@v3
+          attempt_limit: 3
+          attempt_delay: 2000
       - uses: FedericoCarboni/setup-ffmpeg@v2
 
       - name: create text file with all mp4 files
