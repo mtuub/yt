@@ -174,7 +174,7 @@ jobs:
   #     sign: ${{matrix.sign}}
 
   upload-videos-yt:
-    # runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: render-videos
     steps:
       - uses: actions/checkout@v3
