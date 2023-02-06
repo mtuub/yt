@@ -25,24 +25,28 @@ require("dotenv").config();
   const video_datas = [];
 
   for (let idx = 0; idx < horoscopes.length; idx++) {
-    const horoscope = horoscopes[idx];
-    const tag: Tag = JSON.parse(
-      await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
-    );
+    try {
+      const horoscope = horoscopes[idx];
+      const tag: Tag = JSON.parse(
+        await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
+      );
 
-    const capitalized =
-      horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
-    const data = {
-      path: `output/videos/${horoscope.sign}.mp4`,
-      thumbnail: `output/thumbnails/${horoscope.sign}.png`,
-      title: `${capitalized} Horoscope - ${horoscope.date}`,
-      // tags: tag,
-      description: `Manifest Love & Money 2023: ${
-        process.env.AFFLIATE_LINK
-      } \n\nTags: (${tag.tags.join(", ")})`,
-      isNotForKid: true,
-    };
-    video_datas.push(data);
+      const capitalized =
+        horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
+      const data = {
+        path: `output/videos/${horoscope.sign}.mp4`,
+        thumbnail: `output/thumbnails/${horoscope.sign}.png`,
+        title: `${capitalized} Horoscope - ${horoscope.date}`,
+        // tags: tag,
+        description: `Manifest Love & Money 2023: ${
+          process.env.AFFLIATE_LINK
+        } \n\nTags: (${tag.tags.join(", ")})`,
+        isNotForKid: true,
+      };
+      video_datas.push(data);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   const credentials: any = {
