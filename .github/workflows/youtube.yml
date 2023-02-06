@@ -176,24 +176,6 @@ jobs:
   upload-videos-yt:
     runs-on: windows-latest
     # needs: render-videos
-    strategy:
-      max-parallel: 1
-      matrix:
-        sign:
-          [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-          ]
     steps:
       - uses: actions/checkout@v3
       # - uses: actions/download-artifact@v3
@@ -202,9 +184,9 @@ jobs:
           run_id: 4098480733
 
       - run: npm run install-build
-      - run: node build/server/generate_thumbnails.js ${{matrix.sign}}
-      - run: node build/server/generate_tags.js ${{matrix.sign}}
-      - run: node build/server/upload_yt.js ${{matrix.sign}}
+      - run: node build/server/generate_thumbnails.js
+      - run: node build/server/generate_tags.js
+      - run: node build/server/upload_yt.js
 
   delete-artifacts:
     runs-on: ubuntu-latest

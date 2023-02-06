@@ -3,3 +3,5 @@ build
 .env
 output/**/*
 yt-auth
+*.mp4
+upload.ts

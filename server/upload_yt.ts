@@ -6,12 +6,9 @@ import { upload, comment } from "youtube-videos-uploader";
 require("dotenv").config();
 
 (async () => {
-  const sign = process.argv[2].toLowerCase();
-
   const horoscopes: Horoscope[] = JSON.parse(
     await fs.readFile("output/horoscope.json", "utf-8")
   );
-  const sign_horoscope = horoscopes.find((h) => h.sign === sign);
 
   //   retrieve yt cookies from api
   try {
@@ -27,54 +24,54 @@ require("dotenv").config();
 
   const video_datas = [];
 
-  const horoscope = sign_horoscope;
-  const tag: Tag = JSON.parse(
-    await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
-  );
+  for (let idx = 0; idx < horoscopes.length; idx++) {
+    const horoscope = horoscopes[idx];
+    const tag: Tag = JSON.parse(
+      await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
+    );
 
-  const capitalized =
-    horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
-  const data = {
-    path: `output/videos/${horoscope.sign}.mp4`,
-    thumbnail: `output/thumbnails/${horoscope.sign}.png`,
-    title: `${capitalized} Horoscope - ${horoscope.date}`,
-    // tags: tag,
-    description: `Manifest Love & Money 2023: ${
-      process.env.AFFLIATE_LINK
-    } \n\nTags: (${tag.tags.join(", ")})`,
-    isNotForKid: true,
-  };
-  video_datas.push(data);
+    const capitalized =
+      horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
+    const data = {
+      path: `output/videos/${horoscope.sign}.mp4`,
+      thumbnail: `output/thumbnails/${horoscope.sign}.png`,
+      title: `${capitalized} Horoscope - ${horoscope.date}`,
+      // tags: tag,
+      description: `Manifest Love & Money 2023: ${
+        process.env.AFFLIATE_LINK
+      } \n\nTags: (${tag.tags.join(", ")})`,
+      isNotForKid: true,
+    };
+    video_datas.push(data);
+  }
 
   const credentials: any = {
     email: process.env.YT_EMAIL,
     pass: "process.env.YT_PASSWORD",
   };
-
-  const video_data = video_datas[0];
   // Upload video
   glob(
     "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
     // "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
     function (er, file_path) {
-      upload(credentials, [...video_data], {
+      upload(credentials, video_datas, {
         executablePath: file_path[0],
       }).then((urls) => {
-        console.log(`Uploaded video for ${video_data.title}`);
-        // comment after 1 minute
-        setTimeout(() => {
-          const comments = [
-            {
-              link: urls[0],
-              comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
-              pin: true,
-            },
-          ];
+        console.log(`Uploaded videos`);
+        // // comment after 1 minute
+        // setTimeout(() => {
+        //   const comments = [
+        //     {
+        //       link: urls[0],
+        //       comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
+        //       pin: true,
+        //     },
+        //   ];
 
-          comment(credentials, [...comments]).then((_) =>
-            console.log(`Commented on video for ${video_data.title}`)
-          );
-        }, 60000);
+        //   comment(credentials, [...comments]).then((_) =>
+        //     console.log(`Commented on video for ${video_data.title}`)
+        //   );
+        // }, 60000);
       });
     }
   );

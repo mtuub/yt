@@ -20,9 +20,9 @@ export const HoroscopeComponent = (props) => {
         backgroundColor: "rgba(0,0,0,0.8)",
       }}
     >
-      <Audio
+      {/* <Audio
         src={require(`../../output/audios/${horoscope_with_subtitles_and_images.horoscope.sign}.mp3`)}
-      />
+      /> */}
 
       <Series>
         {horoscope_with_subtitles_and_images.subtitles.map((subtitle, sIdx) => {
