@@ -53,10 +53,13 @@ require("dotenv").config();
     email: process.env.YT_EMAIL,
     pass: "process.env.YT_PASSWORD",
   };
+
+  console.log(video_datas);
+
   // Upload video
   glob(
-    "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
-    // "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
+    // "node_modules/puppeteer/.local-chromium/**/chrome-win/chrome.exe",
+    "node_modules/puppeteer/.local-chromium/**/chrome-linux/chrome",
     function (er, file_path) {
       upload(credentials, video_datas, {
         executablePath: file_path[0],
