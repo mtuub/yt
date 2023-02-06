@@ -11,7 +11,7 @@ import { checkIfFileExists } from "./utils";
     await fs.readFile("output/horoscope.json", "utf-8")
   );
 
-  const save_dir = "output/thumbnails";
+  const save_dir = "output/tags";
   try {
     await fs.mkdir(save_dir, { recursive: true });
   } catch (error) {}
