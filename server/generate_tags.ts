@@ -11,12 +11,13 @@ import { checkIfFileExists } from "./utils";
     await fs.readFile("output/horoscope.json", "utf-8")
   );
 
+  const save_dir = "output/thumbnails";
+  try {
+    await fs.mkdir(save_dir, { recursive: true });
+  } catch (error) {}
+
   for (let idx = 0; idx < horoscopes.length; idx++) {
     const horoscope = horoscopes[idx];
-    const save_dir = "output/thumbnails";
-    try {
-      await fs.mkdir(save_dir, { recursive: true });
-    } catch (error) {}
 
     const date_arr = horoscope.date.split(" ");
     const svgImage = `
