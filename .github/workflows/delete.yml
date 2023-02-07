@@ -1,7 +1,7 @@
 name: Delete artifacts
 
 on:
-  workfow_dispatch:
+  workflow_dispatch:
 
 jobs:
   delete-artifacts:
