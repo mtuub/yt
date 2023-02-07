@@ -176,7 +176,7 @@ jobs:
       - run: npm run install-build
       - run: node build/server/generate_thumbnails.js ${{matrix.sign}}
       - run: node build/server/generate_tags.js ${{matrix.sign}}
-      - run: node build/server/upload_yt.js 2 ${{matrix.sign}}
+      - run: node build/server/upload_yt.js ${{matrix.sign}}
 
   delete-artifacts:
     runs-on: ubuntu-latest
