@@ -6,9 +6,15 @@ import { upload, comment } from "youtube-videos-uploader";
 require("dotenv").config();
 
 (async () => {
-  const horoscopes: Horoscope[] = JSON.parse(
+  let horoscopes: Horoscope[] = JSON.parse(
     await fs.readFile("output/horoscope.json", "utf-8")
   );
+  const part = process.argv[2].toLowerCase();
+  if (part === "1") {
+    horoscopes = horoscopes.slice(0, 6);
+  } else if (part === "2") {
+    horoscopes = horoscopes.slice(6);
+  }
 
   //   retrieve yt cookies from api
   try {
@@ -53,8 +59,6 @@ require("dotenv").config();
     email: process.env.YT_EMAIL,
     pass: "process.env.YT_PASSWORD",
   };
-
-  console.log(video_datas);
 
   // Upload video
   glob(
