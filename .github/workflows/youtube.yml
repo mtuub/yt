@@ -10,105 +10,105 @@ on:
     branches: master
 
 jobs:
-  # cache-dependencies:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     - name: Cache node modules
-  #       uses: actions/cache@v3
-  #       id: cache-node-modules
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
-
-  #     - name: Install dependencies
-  #       run: npm i
-
-  # scrape-horoscopes:
-  #   name: Scrape Horsocope
-  #   runs-on: ubuntu-latest
-  #   needs: cache-dependencies
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Restore node modules cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
-  #     - run: npm run build
-  #     - run: node build/server/scrape_horoscopes.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-
-  # generate-tts:
-  #   runs-on: ubuntu-latest
-  #   needs: scrape-horoscopes
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/download-artifact@v3
-  #     - name: Restore node modules cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
-  #     - run: npm run build
-  #     - run: node build/server/generate_tts.js
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-
-  # generate-subtitles-and-get-videos-urls:
-  #   runs-on: ubuntu-latest
-  #   needs: generate-tts
-  #   strategy:
-  #     matrix:
-  #       sign:
-  #         [
-  #           "aries",
-  #           "taurus",
-  #           "gemini",
-  #           "cancer",
-  #           "leo",
-  #           "virgo",
-  #           "libra",
-  #           "scorpio",
-  #           "sagittarius",
-  #           "capricorn",
-  #           "aquarius",
-  #           "pisces",
-  #         ]
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/download-artifact@v3
-  #     - run: npm run install-build
-  #     - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: output
-  #         path: ./output
-
-  generate-subtitles-and-get-videos-urls:
+  cache-dependencies:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dawidd6/action-download-artifact@v2
-        with:
-          run_id: 4116305229
 
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm i
+
+  scrape-horoscopes:
+    name: Scrape Horoscope
+    runs-on: ubuntu-latest
+    needs: cache-dependencies
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm run build
+      - run: node build/server/scrape_horoscopes.js
       - uses: actions/upload-artifact@v3
         with:
           name: output
           path: ./output
+
+  generate-tts:
+    runs-on: ubuntu-latest
+    needs: scrape-horoscopes
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm run build
+      - run: node build/server/generate_tts.js
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+
+  generate-subtitles-and-get-videos-urls:
+    runs-on: ubuntu-latest
+    needs: generate-tts
+    strategy:
+      matrix:
+        sign:
+          [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces",
+          ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+      - run: npm run install-build
+      - run: node build/server/generate_subtitles_videos.js ${{ matrix.sign }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: ./output
+
+  # generate-subtitles-and-get-videos-urls:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: dawidd6/action-download-artifact@v2
+  #       with:
+  #         run_id: 4116305229
+
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: output
+  #         path: ./output
 
   render-videos:
     needs: generate-subtitles-and-get-videos-urls
