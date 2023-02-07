@@ -126,7 +126,9 @@ export const HoroscopeComponent = (props) => {
               <h1 style={{ color: "#FFFD04", fontSize: "100px" }}>
                 Attract Money, Love & Success
               </h1>
-              <h1 style={{ color: "#FFF", fontSize: "100px" }}>Link in Bio</h1>
+              <h1 style={{ color: "#FFF", fontSize: "100px" }}>
+                Link in Description
+              </h1>
             </AbsoluteFill>
           </AbsoluteFill>
         </Series.Sequence>
