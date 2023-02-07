@@ -30,6 +30,7 @@ import { getVideoSuggestion } from "./services/video_search";
     let video_url;
     try {
       video_url = await getVideoSuggestion(sentence);
+      if (!video_url) throw new Error("No video found");
     } catch (error) {
       video_url = await getVideoSuggestion(sign);
     }
