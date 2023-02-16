@@ -60,20 +60,20 @@ require("dotenv").config();
         executablePath: file_path[0],
       }).then((urls) => {
         console.log(`Uploaded videos`);
-        // // comment after 1 minute
-        // setTimeout(() => {
-        //   const comments = [
-        //     {
-        //       link: urls[0],
-        //       comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
-        //       pin: true,
-        //     },
-        //   ];
+        // comment after 1 minute
+        setTimeout(() => {
+          const comments = [
+            {
+              link: urls[0],
+              comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
+              pin: true,
+            },
+          ];
 
-        //   comment(credentials, [...comments]).then((_) =>
-        //     console.log(`Commented on video for ${video_data.title}`)
-        //   );
-        // }, 60000);
+          comment(credentials, [...comments]).then((_) =>
+            console.log(`Commented on video for ${sign}`)
+          );
+        }, 60000);
       });
     }
   );
