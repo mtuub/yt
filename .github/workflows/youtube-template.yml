@@ -107,8 +107,8 @@ jobs:
       num_of_workers: 20
       remotion_composition_id: Horoscope
       remotion_entry_point: remotion/src/index.tsx
-      output_path: output/videos/${{env.SIGN}}.mp4
-      sign: ${{env.SIGN}}
+      output_path: output/videos/${{inputs.SIGN}}.mp4
+      sign: ${{inputs.SIGN}}
 
   upload-videos-yt:
     runs-on: ubuntu-latest
