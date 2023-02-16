@@ -119,7 +119,7 @@ jobs:
       - run: npm run install-build
       - run: node build/server/generate_thumbnails.js ${{inputs.SIGN}}
       - run: node build/server/generate_tags.js ${{inputs.SIGN}}
-      - run: ffmpeg -i output/videos/${{inputs.SIGN}}.mp4 -i output/audios/${{inputs.SIGN}}.mp3 -c copy output/videos/${{inputs.SIGN}}-final.mp4 # temporary fix for video without audio
+      - run: ffmpeg -i output/videos/${{inputs.SIGN}}.mp4 -i output/audios/${{inputs.SIGN}}.mp3 -map 0:v -map 1:a -c:v copy -shortest output/videos/${{inputs.SIGN}}-final.mp4 # temporary fix for video without audio
       - run: node build/server/upload_yt.js ${{inputs.SIGN}}
 
   delete-artifacts:
