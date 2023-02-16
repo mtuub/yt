@@ -20,7 +20,6 @@ env:
   YT_EMAIL: ${{secrets.YT_EMAIL}}
   YT_PASSWORD: ${{secrets.YT_PASSWORD}}
   AFFLIATE_LINK: ${{secrets.AFFLIATE_LINK}}
-  SIGN: ${{inputs.sign}}
 
 jobs:
   cache-dependencies:
@@ -74,7 +73,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm run build
-      - run: node build/server/generate_tts.js ${{env.SIGN}}
+      - run: node build/server/generate_tts.js ${{inputs.SIGN}}
       - uses: actions/upload-artifact@v3
         with:
           name: output
@@ -94,7 +93,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm run build
-      - run: node build/server/generate_subtitles_videos.js ${{ env.SIGN }}
+      - run: node build/server/generate_subtitles_videos.js ${{ inputs.SIGN }}
       - uses: actions/upload-artifact@v3
         with:
           name: output
@@ -125,9 +124,9 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm run build
-      - run: node build/server/generate_thumbnails.js ${{env.SIGN}}
-      - run: node build/server/generate_tags.js ${{env.SIGN}}
-      - run: node build/server/upload_yt.js ${{env.SIGN}}
+      - run: node build/server/generate_thumbnails.js ${{inputs.SIGN}}
+      - run: node build/server/generate_tags.js ${{inputs.SIGN}}
+      - run: node build/server/upload_yt.js ${{inputs.SIGN}}
 
   delete-artifacts:
     runs-on: ubuntu-latest
