@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm i && npm i remotion react react-dom @remotion/cli
+        run: npm i remotion react react-dom @remotion/cli
 
   build-matrix:
     runs-on: ubuntu-latest
@@ -179,6 +179,10 @@ jobs:
         run: |
           mkdir -p $(dirname ${{env.OUTPUT_PATH}})
           ffmpeg -f concat -i "list.txt" -i workflow_output/audio.mp3 -c copy ${{env.OUTPUT_PATH}}
+
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: workflow_output
 
       - uses: actions/upload-artifact@v3
         with:

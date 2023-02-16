@@ -115,15 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
-      - name: Restore node modules cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - run: npm run build
+      - run: npm run install-build
       - run: node build/server/generate_thumbnails.js ${{inputs.SIGN}}
       - run: node build/server/generate_tags.js ${{inputs.SIGN}}
       - run: node build/server/upload_yt.js ${{inputs.SIGN}}
