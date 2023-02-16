@@ -1,9 +1,11 @@
 name: Create Aries video
+
 on:
   push:
     branches: master
+
 jobs:
-  call-workflow-in-local-repo:
+  call-workflow-1-in-local-repo:
     uses: ./.github/workflows/youtube-template.yml
     with:
       sign: aries
