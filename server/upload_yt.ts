@@ -35,7 +35,7 @@ require("dotenv").config();
   const capitalized =
     horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
   const data = {
-    path: `output/videos/${horoscope.sign}.mp4`,
+    path: `output/videos/${horoscope.sign}-final.mp4`,
     thumbnail: `output/thumbnails/${horoscope.sign}.png`,
     title: `${capitalized} Horoscope - ${horoscope.date}`,
     // tags: tag,
