@@ -1,8 +1,8 @@
 name: Create Aries video
 
 on:
-  push:
-    branches: master
+  # push:
+  #   branches: master
   schedule:
     - cron: "0 20 * * *" # Everyday at 20.00 UTC
 

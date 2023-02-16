@@ -1,0 +1,16 @@
+name: Create leo video
+
+on:
+  schedule:
+    - cron: "0 22 * * *"
+
+jobs:
+  call-workflow-in-local-repo:
+    uses: ./.github/workflows/youtube-template.yml
+    with:
+      sign: leo
+    secrets:
+      API_URL: ${{secrets.API_URL}}
+      YT_EMAIL: ${{secrets.YT_EMAIL}}
+      YT_PASSWORD: ${{secrets.YT_PASSWORD}}
+      AFFLIATE_LINK: ${{secrets.AFFLIATE_LINK}}
