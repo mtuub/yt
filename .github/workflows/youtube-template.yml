@@ -8,16 +8,12 @@ on:
     secrets:
       API_URL:
         required: true
-        type: string
       YT_EMAIL:
         required: true
-        type: string
       YT_PASSWORD:
         required: true
-        type: string
       AFFLIATE_LINK:
         required: true
-        type: string
 
 env:
   API_URL: ${{secrets.API_URL}}
