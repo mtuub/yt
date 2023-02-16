@@ -3,13 +3,18 @@ name: Create Aries video
 on:
   push:
     branches: master
+env:
+  API_URL: ${{secrets.API_URL}}
+  YT_EMAIL: ${{secrets.YT_EMAIL}}
+  YT_PASSWORD: ${{secrets.YT_PASSWORD}}
+  AFFLIATE_LINK: ${{secrets.AFFLIATE_LINK}}
 
 jobs:
-  call-workflow-1-in-local-repo:
+  call-workflow-in-local-repo:
     uses: ./.github/workflows/youtube-template.yml
     with:
       sign: aries
-      api_url: ${{secrets.API_URL}}
-      yt_email: ${{secrets.YT_EMAIL}}
-      yt_password: ${{secrets.YT_PASSWORD}}
-      affliate_link: ${{secrets.AFFLIATE_LINK}}
+      api_url: ${{env.API_URL}}
+      yt_email: ${{env.YT_EMAIL}}
+      yt_password: ${{env.YT_PASSWORD}}
+      affliate_link: ${{env.AFFLIATE_LINK}}
