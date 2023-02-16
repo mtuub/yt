@@ -5,23 +5,11 @@ on:
       sign:
         required: true
         type: string
-      api_url:
-        required: true
-        type: string
-      yt_email:
-        required: true
-        type: string
-      yt_password:
-        required: true
-        type: string
-      affliate_link:
-        required: true
-        type: string
 env:
-  API_URL: ${{inputs.api_url}}
-  YT_EMAIL: ${{inputs.yt_email}}
-  YT_PASSWORD: ${{inputs.yt_password}}
-  AFFLIATE_LINK: ${{inputs.affliate_link}}
+  API_URL: ${{secrets.API_URL}}
+  YT_EMAIL: ${{secrets.YT_EMAIL}}
+  YT_PASSWORD: ${{secrets.YT_PASSWORD}}
+  AFFLIATE_LINK: ${{secrets.AFFLIATE_LINK}}
   SIGN: ${{inputs.sign}}
 
 jobs:
