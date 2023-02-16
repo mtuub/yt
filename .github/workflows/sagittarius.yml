@@ -2,7 +2,7 @@ name: Create sagittarius video
 
 on:
   schedule:
-    - cron: "0 24 * * *"
+    - cron: "0 0 * * *"
 
 jobs:
   call-workflow-in-local-repo:
