@@ -9,3 +9,7 @@ jobs:
     uses: ./.github/workflows/youtube-template.yml
     with:
       sign: aries
+      api_url: ${{secrets.API_URL}}
+      yt_email: ${{secrets.YT_EMAIL}}
+      yt_password: ${{secrets.YT_PASSWORD}}
+      affliate_link: ${{secrets.AFFLIATE_LINK}}
