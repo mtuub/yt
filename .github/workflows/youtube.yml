@@ -6,8 +6,9 @@ env:
   AFFLIATE_LINK: ${{secrets.AFFLIATE_LINK}}
 
 on:
-  push:
-    branches: master
+  # push:
+  #   branches: master
+  workflow_dispatch:
 
 jobs:
   # cache-dependencies:

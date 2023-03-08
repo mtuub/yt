@@ -32,6 +32,15 @@ require("dotenv").config();
     await fs.readFile(`output/tags/${horoscope.sign}.json`, "utf-8")
   );
 
+  const taglines = [
+    "Manifest 100x Money",
+    "Manifest Love & Money",
+    "Expert Astrology Reading",
+    "Attract Love",
+    "Attract Your Life Partner",
+  ];
+  const tagline = taglines[Math.floor(Math.random() * taglines.length)];
+
   const capitalized =
     horoscope.sign.charAt(0).toUpperCase() + horoscope.sign.slice(1);
   const data = {
@@ -39,7 +48,7 @@ require("dotenv").config();
     thumbnail: `output/thumbnails/${horoscope.sign}.png`,
     title: `${capitalized} Horoscope - ${horoscope.date}`,
     // tags: tag,
-    description: `Manifest Love & Money 2023: ${
+    description: `${tagline}: ${
       process.env.AFFLIATE_LINK
     } \n\nTags: (${tag.tags.join(", ")})`,
     isNotForKid: true,
@@ -65,7 +74,7 @@ require("dotenv").config();
           const comments = [
             {
               link: urls[0],
-              comment: `Manifest Love & Money Instantly: ${process.env.AFFLIATE_LINK}`,
+              comment: `${tagline}: ${process.env.AFFLIATE_LINK}`,
               pin: true,
             },
           ];
